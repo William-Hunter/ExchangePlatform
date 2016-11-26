@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.devMode" value="false" />
+
+
+	<package name="default" namespace="/" extends="struts-default">
+		<action name="Register" class="action.user.Register">
+			<result name="success">/Page/Login.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="Login" method="login" class="action.user.Login">
+			<result name="success">/Page/UserFace.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="Logout" method="logout" class="action.user.Logout">
+			<result name="success">/index.html</result>
+			<result name="input"></result>
+		</action>
+		<action name="Logoff" method="logoff" class="action.user.Logoff">
+			<result name="success">/index.html</result>
+			<result name="input"></result>
+		</action>
+		<action name="ChangePassword" class="action.user.ChangePassword">
+			<result name="success">/Page/UserFace.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="RecoverPassword" class="action.user.RecoverPassword">
+			<result name="success">/Page/Login.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="CheckUser" class="action.user.CheckUser">
+			<result name="success">/Page/UserInfo.jsp</result>
+			<result name="input"></result>
+
+		</action>
+
+
+
+
+		<action name="MyItem" class="action.item.MyItem">
+			<result name="success">/Page/MyItem.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="ItemInfo" class="action.item.ItemInfo">
+			<result name="success">/Page/ItemInfo.jsp</result>
+			<result name="input"></result>
+		</action>
+		<action name="AddItem" class="action.item.AddItem">
+			<result name="success" type="chain">MyItem</result>
+			<result name="input">/Page/AddItem.jsp</result>
+		</action>
+		<action name="RemoveItem" class="action.item.RemoveItem">
+			<result name="success" type="chain">MyItem</result>
+			<result name="input">/Page/MyItem.jsp</result>
+		</action>
+		<action name="ItemInfo" class="action.item.ItemInfo">
+			<result name="success">/Page/ItemInfo.jsp</result>
+			<result name="input">/Page/MyItem.jsp</result>
+		</action>
+		<action name="SearchItem" class="action.item.SearchItem">
+			<result name="success">/Page/SearchResult.jsp</result>
+			<result name="input">/Page/UserFace.jsp</result>
+		</action>
+		<action name="Deal" class="action.item.Deal">
+			<result name="success" type="chain">MyItem</result>
+			<result name="input">/Page/ItemInfo.jsp</result>
+		</action>
+
+
+
+		<action name="BuyRecord" method="ShowRecord" class="action.ActionDealRecord">
+			<result name="success">/Page/DealList.jsp</result>
+			<result name="input"></result>
+		</action>
+
+
+		<action name="AddComment" method="addComment" class="action.ActionComment">
+			<result name="success" type="redirect">
+                                ItemInfo?item.itemId=${#session.item.itemId}
+                        </result>
+                        <result name="input"></result>
+		</action>
+		<action name="DeleteComment" method="deleteComment" class="action.ActionComment">
+			<result name="success" type="redirect">
+				ItemInfo?item.itemId=${#session.item.itemId}
+			</result>
+			<result name="input"></result>
+		</action>
+
+
+
+
+		<action name="EditItem" class="action.item.EditItem">
+			<result name="success">/Page/EditItem.jsp</result>
+			<result name="input"></result>
+		</action>
+
+		<action name="SubmitChange" class="action.item.SubmitChange">
+			<result name="success" type="chain">MyItem</result>
+			<result name="input"></result>
+		</action>
+
+
+
+	</package>
+
+	<include file="struts-default.xml" />
+</struts>

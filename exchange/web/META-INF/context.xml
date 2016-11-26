@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+
+<Context>
+<Resource 
+                name="MysqlExchange"
+                auth="Container" 
+                type="javax.sql.DataSource"
+                username="root" 
+                password="william"
+                driverClassName="com.mysql.jdbc.Driver"
+                url="jdbc:mysql://127.0.0.1:3306/exchange"
+                maxActive="10" maxIdle="4" />
+
+</Context>
