@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="MySQL - exchange@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="2.6">
+    <schema id="1" name="exchange">
+      <visible>1</visible>
+    </schema>
+    <schema id="2" name="information_schema"/>
+    <schema id="3" name="mysql"/>
+    <schema id="4" name="performance_schema"/>
+    <schema id="5" name="sakila"/>
+    <schema id="6" name="searchhouse"/>
+    <schema id="7" name="sys"/>
+    <schema id="8" name="world"/>
+    <table id="9" parent="1" name="comment"/>
+    <table id="10" parent="1" name="dealrecord"/>
+    <table id="11" parent="1" name="user"/>
+    <table id="12" parent="1" name="item"/>
+    <column id="13" parent="9" name="commentId">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="14" parent="9" name="sender">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="15" parent="9" name="receiver">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="16" parent="9" name="context">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="17" parent="9" name="aim">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="18" parent="9" name="PRIMARY">
+      <columns>commentId</columns>
+      <primary>1</primary>
+    </key>
+    <column id="19" parent="10" name="dealId">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="20" parent="10" name="sender">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="21" parent="10" name="receiver">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="22" parent="10" name="itemId">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="23" parent="10" name="itemName">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <key id="24" parent="10" name="PRIMARY">
+      <columns>dealId</columns>
+      <primary>1</primary>
+    </key>
+    <column id="25" parent="11" name="email">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="26" parent="11" name="password">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="27" parent="11" name="statu">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1) unsigned|0</data-type>
+    </column>
+    <column id="28" parent="11" name="authorize">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="29" parent="11" name="joinTime">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="30" parent="11" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <key id="31" parent="11" name="PRIMARY">
+      <columns>email</columns>
+      <primary>1</primary>
+    </key>
+    <column id="32" parent="12" name="itemId">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="33" parent="12" name="itemName">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="34" parent="12" name="owner">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="35" parent="12" name="buyPrice">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="36" parent="12" name="description">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="37" parent="12" name="pictureLink">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <key id="38" parent="12" name="PRIMARY">
+      <columns>itemId</columns>
+      <primary>1</primary>
+    </key>
+  </database-model>
+</dataSource>

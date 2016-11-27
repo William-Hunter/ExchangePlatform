@@ -1,14 +1,6 @@
 package dao;
 
-import javax.naming.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import javax.sql.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import bean.*;
 
 public class UserAccess extends Access {
 

@@ -13,13 +13,15 @@ public class UserBiz extends UserAccess {
 	}
 
 	// 针对user bean创建的方法
-	public Boolean register(User user, String authorize) {
+	public Boolean register(User user, String authorize) throws SQLException, IllegalAccessException {
 		String email = user.getEmail();
-		String password = user.getPassword();
 		String joinTime = user.getJoinTime();
 		String name = user.getName();
+		user.setAuthorize(authorize);
+		user.setOnLine(false);
+
 		if (selectEmail(email).isEmpty()) {
-			if (insert(email, password, false, authorize, joinTime, name) == 1) {
+			if (insert(user) == 1) {
 				return true;
 			}
 		}else{
@@ -31,7 +33,7 @@ public class UserBiz extends UserAccess {
 	public User login(User user) {
 		String email = user.getEmail();
 		String password = user.getPassword();
-		user.setValid(false);
+		user.setOnLine(false);
 		if ((!selectEmail(email).isEmpty()) && selectPassword(email).equals(password)) {
 			if (updateStatu(email, true) == 1) {
 				user.setAuthorize(selectAuthorize(email));
@@ -39,7 +41,7 @@ public class UserBiz extends UserAccess {
 				user.setOnLine(selectStatu(email));
 				user.setJoinTime(selectJoinTime(email));
 				user.setName(selectName(email));
-				user.setValid(true);
+				user.setOnLine(true);
 			}
 		}
 		return user;
@@ -66,7 +68,7 @@ public class UserBiz extends UserAccess {
 		if (selectPassword(email).equals(password)) {
 			if (delete(email) == 1) {
 				user.setAuthorize("");
-				user.setValid(false);
+				user.setOnLine(false);
 			}
 		}
 		return user;
@@ -132,7 +134,7 @@ public class UserBiz extends UserAccess {
 	
 
 	public Boolean shutDown() {
-		sql = "UPDATE userinfo SET Statu=?";
+		sql ="UPDATE userinfo SET Statu=?";
 		Object[] param = { false };
 		if (update(sql, param) >= 0) {
 			return true;

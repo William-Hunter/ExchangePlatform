@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-11-25 19:41:47
+Date: 2016-11-27 21:09:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,12 +20,12 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
-  `CommentId` int(10) unsigned NOT NULL,
-  `Sender` varchar(45) NOT NULL,
-  `Receiver` varchar(45) NOT NULL,
-  `Context` varchar(100) NOT NULL,
-  `Aim` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`CommentId`)
+  `commentId` int(10) unsigned NOT NULL,
+  `sender` varchar(45) NOT NULL,
+  `receiver` varchar(45) NOT NULL,
+  `context` varchar(100) NOT NULL,
+  `aim` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`commentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -37,12 +37,12 @@ CREATE TABLE `comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `dealrecord`;
 CREATE TABLE `dealrecord` (
-  `DealId` int(10) unsigned NOT NULL,
-  `Sender` varchar(45) NOT NULL,
-  `Receiver` varchar(45) NOT NULL,
-  `ItemId` int(10) unsigned NOT NULL,
-  `ItemName` varchar(45) NOT NULL,
-  PRIMARY KEY (`DealId`)
+  `dealId` int(10) unsigned NOT NULL,
+  `sender` varchar(45) NOT NULL,
+  `receiver` varchar(45) NOT NULL,
+  `itemId` int(10) unsigned NOT NULL,
+  `itemName` varchar(45) NOT NULL,
+  PRIMARY KEY (`dealId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -54,13 +54,13 @@ CREATE TABLE `dealrecord` (
 -- ----------------------------
 DROP TABLE IF EXISTS `iteminfo`;
 CREATE TABLE `iteminfo` (
-  `ItemId` int(10) unsigned NOT NULL,
-  `ItemName` varchar(45) NOT NULL,
-  `Owner` varchar(45) NOT NULL,
-  `BuyPrice` int(10) unsigned NOT NULL,
-  `Description` varchar(100) NOT NULL,
-  `PictureLink` varchar(45) NOT NULL,
-  PRIMARY KEY (`ItemId`)
+  `itemId` int(10) unsigned NOT NULL,
+  `itemName` varchar(45) NOT NULL,
+  `owner` varchar(45) NOT NULL,
+  `buyPrice` int(10) unsigned NOT NULL,
+  `description` varchar(100) NOT NULL,
+  `pictureLink` varchar(45) NOT NULL,
+  PRIMARY KEY (`itemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -72,13 +72,13 @@ CREATE TABLE `iteminfo` (
 -- ----------------------------
 DROP TABLE IF EXISTS `userinfo`;
 CREATE TABLE `userinfo` (
-  `Email` varchar(45) NOT NULL,
-  `Password` varchar(45) NOT NULL,
-  `Statu` tinyint(1) unsigned NOT NULL,
-  `Authorize` varchar(45) NOT NULL,
-  `JoinTime` date NOT NULL,
-  `Name` varchar(45) NOT NULL,
-  PRIMARY KEY (`Email`)
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `statu` tinyint(1) unsigned NOT NULL,
+  `authorize` varchar(45) NOT NULL,
+  `joinTime` date NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

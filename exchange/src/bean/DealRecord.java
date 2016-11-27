@@ -1,38 +1,22 @@
 package bean;
 
 public class DealRecord {
-	private long id;
+	private long dealId;
 	private String sender;
 	private String receiver;
 	private long itemId;
-	private String ItemName;
-	
-	public String getItemName() {
-		return ItemName;
+	private String itemName;
+
+	public long getDealId() {
+		return dealId;
 	}
 
-	public void setItemName(String itemName) {
-		ItemName = itemName;
+	public void setDealId(long dealId) {
+		this.dealId = dealId;
 	}
 
 	public String getSender() {
 		return sender;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getItemId() {
-		return itemId;
-	}
-
-	public void setItemId(long itemId) {
-		this.itemId = itemId;
 	}
 
 	public void setSender(String sender) {
@@ -47,4 +31,19 @@ public class DealRecord {
 		this.receiver = receiver;
 	}
 
+	public long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(long itemId) {
+		this.itemId = itemId;
+	}
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 }
