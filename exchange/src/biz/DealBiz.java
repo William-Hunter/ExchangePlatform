@@ -24,7 +24,7 @@ public class DealBiz extends DealAccess {
 	
 	
 	public boolean addRecord(DealRecord record){
-		if(insert(record.getId(),record.getSender(),record.getReceiver(),record.getItemId(),record.getItemName())==1){
+		if(insert(record.getDealId(),record.getSender(),record.getReceiver(),record.getItemId(),record.getItemName())==1){
 			return true;
 		}else{
 			return false;

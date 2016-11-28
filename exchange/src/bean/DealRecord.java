@@ -1,11 +1,11 @@
 package bean;
 
 public class DealRecord {
-	private long dealId;
-	private String sender;
-	private String receiver;
-	private long itemId;
-	private String itemName;
+	public long dealId;
+	public String sender;
+	public String receiver;
+	public long itemId;
+	public String itemName;
 
 	public long getDealId() {
 		return dealId;

@@ -20,7 +20,7 @@ public class Login extends ActionSupport {
 	public String login() {
 
 		user = AppListener.userbiz.login(user);
-		if (user.isOnLine()) {
+		if (user.isStatu()) {
 			logger.debug("account login success");
 			Map session = ActionContext.getContext().getSession();
 			session.put("user", user);

@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CommentAccess extends Access {
+	public String sql;
 
 	public CommentAccess() throws SQLException {
 		super();
+		sql=null;
 	}
 
 	protected long insert(long ComId, String Sender, String Receiver, String Context,long Aim) {

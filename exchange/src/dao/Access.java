@@ -196,12 +196,13 @@ public class Access {
 
 
 
-	public int update(Object instanse){
+	public int update(Object instanse) throws SQLException, IllegalAccessException {
 //		UPDATE Person SET Address='Zhongshan23',City='Nanjing' WHERE LastName = 'Wilson'
 		sql=new StringBuilder("UPDATE ");
 		Class _class=instanse.getClass();
 		sql.append(_class.getSimpleName()+" SET ");
 		Field[] fields=_class.getDeclaredFields();
+
 		for(int index=0;index<fields.length;index++){
 			if(fields[index].getName().equals("email")){
 				continue;
@@ -214,50 +215,17 @@ public class Access {
 		}
 		sql.append(" WHERE email=?;");
 
-		//    2016-11-27夜  21:42
-
-
-	}
-
-
-
-	public List<House> select(String minprice, String maxprice) throws SQLException, IllegalAccessException {
-		logger.info("-----------------------------------------------");
-		logger.info(this.getClass().getName()+".select()");
-
-		sql = new StringBuilder("SELECT ids,title,price,imgs,lat,lon,time,phone,unit,houseInfo,URL FROM House WHERE price<="+maxprice+" AND price>="+minprice+";");
-		logger.debug("SQL:"+sql.toString());
-		ps = con.prepareStatement(sql.toString());
-		rs=ps.executeQuery();                                  //得到结果集
-
-		House house=new House();                               //实例一个house对象，获取其中的属性\
-
-		Class _class=house.getClass();
-		Field[] fields= _class.getDeclaredFields();
-
-		List<House> list=new LinkedList<House>();
-
-		try{
-			for(rs.first();!rs.isAfterLast();rs.next()){        //将房子信息添加到list
-				house=new House();
-				for(Field field:fields){
-					try {
-						rs.getString(field.getName());
-					}catch (SQLException e){
-						continue;
-					}
-					field.set(house,rs.getString(field.getName()));
-				}
-
-				list.add(house);
+		preparedstatement = conntect.prepareStatement(sql.toString());
+		for(int index=0;index<fields.length;index++){
+			if(fields[index].getName().equals("email")){
+				preparedstatement.setObject(fields.length, fields[index].get(instanse));
+			}else{
+				preparedstatement.setObject(index + 1, fields[index].get(instanse));
 			}
-		}catch (NullPointerException|SQLException e){
-			e.printStackTrace();
-			return null;
 		}
+		return preparedstatement.executeUpdate();
 
-		logger.info("-----------------------------------------------");
-		return list;
 	}
+
 
 }

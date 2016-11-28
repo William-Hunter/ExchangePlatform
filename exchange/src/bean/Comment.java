@@ -1,11 +1,11 @@
 package bean;
 
 public class Comment {
-	private long commentId;
-	private String sender;
-	private String receiver;
-	private String context;
-	private long aim;
+	public long commentId;
+	public String sender;
+	public String receiver;
+	public String context;
+	public long aim;
 
 	public long getCommentId() {
 		return commentId;

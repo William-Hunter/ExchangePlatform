@@ -1,5 +1,6 @@
 package action.user;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -29,7 +30,7 @@ public class Register extends ActionSupport{
 		this.user = user;
 	}
 	
-	public String execute() {
+	public String execute() throws SQLException, IllegalAccessException {
 		java.util.Date time = new java.util.Date();
 		logger.debug(time.toLocaleString());
 		user.setJoinTime(time.toLocaleString());

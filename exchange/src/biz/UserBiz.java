@@ -15,11 +15,8 @@ public class UserBiz extends UserAccess {
 	// 针对user bean创建的方法
 	public Boolean register(User user, String authorize) throws SQLException, IllegalAccessException {
 		String email = user.getEmail();
-		String joinTime = user.getJoinTime();
-		String name = user.getName();
 		user.setAuthorize(authorize);
-		user.setOnLine(false);
-
+		user.setStatu(false);
 		if (selectEmail(email).isEmpty()) {
 			if (insert(user) == 1) {
 				return true;
@@ -33,15 +30,15 @@ public class UserBiz extends UserAccess {
 	public User login(User user) {
 		String email = user.getEmail();
 		String password = user.getPassword();
-		user.setOnLine(false);
+		user.setStatu(false);
 		if ((!selectEmail(email).isEmpty()) && selectPassword(email).equals(password)) {
 			if (updateStatu(email, true) == 1) {
 				user.setAuthorize(selectAuthorize(email));
 				user.setPassword(selectPassword(email));
-				user.setOnLine(selectStatu(email));
+				user.setStatu(selectStatu(email));
 				user.setJoinTime(selectJoinTime(email));
 				user.setName(selectName(email));
-				user.setOnLine(true);
+				user.setStatu(true);
 			}
 		}
 		return user;
@@ -54,7 +51,7 @@ public class UserBiz extends UserAccess {
 			if (updateStatu(email, false) == 1) {
 				user.setAuthorize(selectAuthorize(email));
 				user.setPassword(selectPassword(email));
-				user.setOnLine(selectStatu(email));
+				user.setStatu(selectStatu(email));
 				user.setJoinTime(selectJoinTime(email));
 				user.setName(selectName(email));
 			}
@@ -68,7 +65,7 @@ public class UserBiz extends UserAccess {
 		if (selectPassword(email).equals(password)) {
 			if (delete(email) == 1) {
 				user.setAuthorize("");
-				user.setOnLine(false);
+				user.setStatu(false);
 			}
 		}
 		return user;
@@ -81,27 +78,13 @@ public class UserBiz extends UserAccess {
 			if (updatePassword(email, newPassword) == 1) {
 				user.setAuthorize(selectAuthorize(email));
 				user.setPassword(selectPassword(email));
-				user.setOnLine(selectStatu(email));
+				user.setStatu(selectStatu(email));
 				user.setJoinTime(selectJoinTime(email));
 				user.setName(selectName(email));
 			}
 		}
 		return user;
 	}
-
-	// public User changeAuthorize(User user, String newAuthorize) {
-	// String username = user.getUsername();
-	// if ((!findAccount(username).isEmpty())) {
-	// if (changeAuthorize(username, newAuthorize) == 1) {
-	// user.setAuthorize(getAuthorize(username));
-	// user.setPassword(getPassword(username));
-	// user.setOnLine(getStatu(username));
-	// user.setEmail(getEmail(username));
-	// user.setJoinTime(getJoinTime(username));
-	// }
-	// }
-	// return user;
-	// }
 
 	public User recoverPassword(User user, String newPassword) {
 		
@@ -111,7 +94,7 @@ public class UserBiz extends UserAccess {
 			if (updatePassword(email, newPassword) == 1) {
 				user.setAuthorize(selectAuthorize(email));
 				user.setPassword(selectPassword(email));
-				user.setOnLine(selectStatu(email));
+				user.setStatu(selectStatu(email));
 				user.setJoinTime(selectJoinTime(email));
 				user.setName(selectName(email));
 			}
@@ -125,16 +108,13 @@ public class UserBiz extends UserAccess {
 		String email = user.getEmail();
 		user.setName(selectName(email));
 		user.setJoinTime(selectJoinTime(email));
-		user.setOnLine(selectStatu(email));		
+		user.setStatu(selectStatu(email));
 		return user;		
 	}
 	
-	
-	
-	
 
 	public Boolean shutDown() {
-		sql ="UPDATE userinfo SET Statu=?";
+		sql ="UPDATE user SET Statu=?";
 		Object[] param = { false };
 		if (update(sql, param) >= 0) {
 			return true;

@@ -5,9 +5,11 @@ import java.util.List;
 
 public class ItemAccess extends Access {
 
+	public String sql;
+
 	public ItemAccess() throws SQLException {
 		super();
-
+		sql=null;
 	}
 
 	protected long insert(long ItemId, String ItemName, String Owner,long BuyPrice, String Description, String PictureLink) {

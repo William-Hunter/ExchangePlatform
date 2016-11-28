@@ -96,7 +96,7 @@ public class Deal extends ActionSupport {
 			id = (long) number;
 		} while (AppListener.dealbiz.isIdExsit(id));
 
-		record.setId(id);
+		record.setDealId(id);
 		record.setSender(newOwner);
 		record.setReceiver(oldOwner);
 		record.setItemId(itemId);

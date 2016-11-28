@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DealAccess extends Access {
+	public String sql;
 
 	public DealAccess() throws SQLException {
 		super();
+		sql=null;
 	}
 
 	protected long insert(long DealId, String Sender, String Receiver, long ItemId,String itemName) {

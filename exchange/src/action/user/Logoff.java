@@ -22,7 +22,7 @@ public class Logoff extends ActionSupport {
 		session.remove("user");
 		session.put("user", user);
 		ActionContext.getContext().setSession(session);
-		if (user.isValid()) {
+		if (user.isStatu()) {
 			logger.debug("account logoff fail");
 			return INPUT;
 		} else {

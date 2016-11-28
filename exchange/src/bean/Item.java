@@ -1,12 +1,12 @@
 package bean;
 
 public class Item {
-	private long itemId;
-	private String itemName;
-	private String owner;
-	private long buyPrice;
-	private String description;
-	private String pictureLink;
+	public long itemId;
+	public String itemName;
+	public String owner;
+	public long buyPrice;
+	public String description;
+	public String pictureLink;
 
 	public String getItemName() {
 		return itemName;

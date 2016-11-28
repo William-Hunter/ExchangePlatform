@@ -22,7 +22,7 @@ public class Logout  extends ActionSupport {
 		session.remove("user");
 		session.put("user", user);
 		ActionContext.getContext().setSession(session);
-		if (user.isOnLine()) {
+		if (user.isStatu()) {
 			logger.debug("account logout fail");
 			return INPUT;
 		} else {

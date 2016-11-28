@@ -59,7 +59,7 @@
 		<p>
 			现在时间：
 			<s:bean id="now" name="java.util.Date" />
-			<s:date name="#attr.now" format="yyyy/dd/MM hh:mm:ss" />
+			<s:date name="#attr.now" format="yyyy/MM/dd hh:mm:ss" />
 		</p>
 		<br> <br> <br> <br> <br> <br> <br>
 		<br>

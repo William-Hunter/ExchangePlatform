@@ -1,12 +1,12 @@
 package bean;
 
 public class User {
-	private String email;
-	private String password;
-	private boolean statu;
-	private String authorize;
-	private String joinTime;
-	private String name;
+	public String email;
+	public String password;
+	public boolean statu;
+	public String authorize;
+	public String joinTime;
+	public String name;
 
 	public String getEmail() {
 		return email;
