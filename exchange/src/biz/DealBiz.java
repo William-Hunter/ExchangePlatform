@@ -13,16 +13,6 @@ public class DealBiz extends DealAccess {
 		super();
 	}
 	
-	public boolean isIdExsit(long id){
-		if(selectSender(id).isEmpty()){
-			return false;
-		}else{
-			return true;
-		}
-		
-	}
-	
-	
 	public boolean addRecord(DealRecord record){
 		if(insert(record.getDealId(),record.getSender(),record.getReceiver(),record.getItemId(),record.getItemName())==1){
 			return true;

@@ -15,9 +15,10 @@
     <table id="10" parent="1" name="dealrecord"/>
     <table id="11" parent="1" name="user"/>
     <table id="12" parent="1" name="item"/>
-    <column id="13" parent="9" name="commentId">
+    <column id="13" parent="9" name="ids">
       <mandatory>1</mandatory>
-      <data-type>int(10) unsigned|0</data-type>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
     </column>
     <column id="14" parent="9" name="sender">
       <mandatory>1</mandatory>
@@ -36,12 +37,13 @@
       <data-type>int(10) unsigned|0</data-type>
     </column>
     <key id="18" parent="9" name="PRIMARY">
-      <columns>commentId</columns>
+      <columns>ids</columns>
       <primary>1</primary>
     </key>
-    <column id="19" parent="10" name="dealId">
+    <column id="19" parent="10" name="ids">
       <mandatory>1</mandatory>
-      <data-type>int(10) unsigned|0</data-type>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
     </column>
     <column id="20" parent="10" name="sender">
       <mandatory>1</mandatory>
@@ -60,63 +62,69 @@
       <data-type>varchar(45)|0</data-type>
     </column>
     <key id="24" parent="10" name="PRIMARY">
-      <columns>dealId</columns>
+      <columns>ids</columns>
       <primary>1</primary>
     </key>
     <column id="25" parent="11" name="email">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <column id="26" parent="11" name="password">
+    <column id="26" parent="11" name="ids">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="27" parent="11" name="password">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <column id="27" parent="11" name="statu">
+    <column id="28" parent="11" name="statu">
       <mandatory>1</mandatory>
       <data-type>tinyint(1) unsigned|0</data-type>
     </column>
-    <column id="28" parent="11" name="authorize">
+    <column id="29" parent="11" name="authorize">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <column id="29" parent="11" name="joinTime">
+    <column id="30" parent="11" name="joinTime">
       <mandatory>1</mandatory>
       <data-type>date|0</data-type>
     </column>
-    <column id="30" parent="11" name="name">
+    <column id="31" parent="11" name="name">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <key id="31" parent="11" name="PRIMARY">
-      <columns>email</columns>
+    <key id="32" parent="11" name="PRIMARY">
+      <columns>ids</columns>
       <primary>1</primary>
     </key>
-    <column id="32" parent="12" name="itemId">
+    <column id="33" parent="12" name="ids">
       <mandatory>1</mandatory>
-      <data-type>int(10) unsigned|0</data-type>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
     </column>
-    <column id="33" parent="12" name="itemName">
-      <mandatory>1</mandatory>
-      <data-type>varchar(45)|0</data-type>
-    </column>
-    <column id="34" parent="12" name="owner">
+    <column id="34" parent="12" name="itemName">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <column id="35" parent="12" name="buyPrice">
+    <column id="35" parent="12" name="owner">
+      <mandatory>1</mandatory>
+      <data-type>varchar(45)|0</data-type>
+    </column>
+    <column id="36" parent="12" name="buyPrice">
       <mandatory>1</mandatory>
       <data-type>int(10) unsigned|0</data-type>
     </column>
-    <column id="36" parent="12" name="description">
+    <column id="37" parent="12" name="description">
       <mandatory>1</mandatory>
       <data-type>varchar(100)|0</data-type>
     </column>
-    <column id="37" parent="12" name="pictureLink">
+    <column id="38" parent="12" name="pictureLink">
       <mandatory>1</mandatory>
       <data-type>varchar(45)|0</data-type>
     </column>
-    <key id="38" parent="12" name="PRIMARY">
-      <columns>itemId</columns>
+    <key id="39" parent="12" name="PRIMARY">
+      <columns>ids</columns>
       <primary>1</primary>
     </key>
   </database-model>

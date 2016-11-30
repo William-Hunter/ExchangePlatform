@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-11-27 21:09:59
+Date: 2016-11-29 11:54:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,12 +20,12 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
-  `commentId` int(10) unsigned NOT NULL,
+  `ids` varchar(45) NOT NULL,
   `sender` varchar(45) NOT NULL,
   `receiver` varchar(45) NOT NULL,
   `context` varchar(100) NOT NULL,
   `aim` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`commentId`)
+  PRIMARY KEY (`ids`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -37,12 +37,12 @@ CREATE TABLE `comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `dealrecord`;
 CREATE TABLE `dealrecord` (
-  `dealId` int(10) unsigned NOT NULL,
+  `ids` varchar(45) NOT NULL,
   `sender` varchar(45) NOT NULL,
   `receiver` varchar(45) NOT NULL,
   `itemId` int(10) unsigned NOT NULL,
   `itemName` varchar(45) NOT NULL,
-  PRIMARY KEY (`dealId`)
+  PRIMARY KEY (`ids`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -50,37 +50,38 @@ CREATE TABLE `dealrecord` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for iteminfo
+-- Table structure for item
 -- ----------------------------
-DROP TABLE IF EXISTS `iteminfo`;
-CREATE TABLE `iteminfo` (
-  `itemId` int(10) unsigned NOT NULL,
+DROP TABLE IF EXISTS `item`;
+CREATE TABLE `item` (
+  `ids` varchar(45) NOT NULL,
   `itemName` varchar(45) NOT NULL,
   `owner` varchar(45) NOT NULL,
   `buyPrice` int(10) unsigned NOT NULL,
   `description` varchar(100) NOT NULL,
   `pictureLink` varchar(45) NOT NULL,
-  PRIMARY KEY (`itemId`)
+  PRIMARY KEY (`ids`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of iteminfo
+-- Records of item
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for userinfo
+-- Table structure for user
 -- ----------------------------
-DROP TABLE IF EXISTS `userinfo`;
-CREATE TABLE `userinfo` (
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
   `email` varchar(45) NOT NULL,
+  `ids` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `statu` tinyint(1) unsigned NOT NULL,
   `authorize` varchar(45) NOT NULL,
   `joinTime` date NOT NULL,
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`email`)
+  PRIMARY KEY (`ids`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of userinfo
+-- Records of user
 -- ----------------------------

@@ -32,3 +32,16 @@
 ![==](preview/AddItem.png)
 响应式设计移动端  
 ![==](preview/mobile.png)
+
+
+###reframe
+-----------------------
+* 在bean里设置primary key
+* 通用的曾删改查
+* 使用ids去标记主键，这样每个表都继承带ids的父类bean Table
+
+
+
+
+
+

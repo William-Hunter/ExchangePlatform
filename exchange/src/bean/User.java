@@ -1,6 +1,6 @@
 package bean;
 
-public class User {
+public class User extends Table {
 	public String email;
 	public String password;
 	public boolean statu;

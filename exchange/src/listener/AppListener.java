@@ -14,21 +14,16 @@ public class AppListener implements ServletContextListener {
 	public static ItemBiz itembiz;
 	public static CommentBiz commentbiz;
 	public static DealBiz dealbiz;
+	public static Access access;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext sc = event.getServletContext();
 		try {
-			userbiz =new UserBiz();
-			itembiz =new ItemBiz();
-			commentbiz=new CommentBiz();
-			dealbiz=new DealBiz();
+			access=new Access();
 			
-			if (userbiz.testContect()) {
+			if (access.isConntect()) {
 				logger.debug("the database contection is able.");
-				if(userbiz.shutDown()){
-					logger.debug("all user shut down");
-				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -37,7 +32,7 @@ public class AppListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		if(userbiz.close()){
+		if(access.close()){
 			logger.debug("DB Access close finish");
 		}else{
 			logger.debug("DB Access close fail");

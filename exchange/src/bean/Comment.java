@@ -1,19 +1,10 @@
 package bean;
 
-public class Comment {
-	public long commentId;
+public class Comment extends Table{
 	public String sender;
 	public String receiver;
 	public String context;
 	public long aim;
-
-	public long getCommentId() {
-		return commentId;
-	}
-
-	public void setCommentId(long commentId) {
-		this.commentId = commentId;
-	}
 
 	public String getSender() {
 		return sender;

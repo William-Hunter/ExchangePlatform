@@ -67,6 +67,8 @@ public class AddItem extends ActionSupport {
 			double ran = Math.random() * 1000;
 			id = (long) ran;
 		} while (AppListener.itembiz.isIdExist(id));
+
+
 		item.setItemId(id); // 设置物品编号
 		// 设置图片所属者
 		item.setOwner(user.getEmail());// 设置物品所有者

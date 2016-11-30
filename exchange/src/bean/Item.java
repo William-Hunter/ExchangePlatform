@@ -1,7 +1,6 @@
 package bean;
 
-public class Item {
-	public long itemId;
+public class Item extends Table {
 	public String itemName;
 	public String owner;
 	public long buyPrice;
@@ -22,14 +21,6 @@ public class Item {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
-	}
-
-	public long getItemId() {
-		return itemId;
-	}
-
-	public void setItemId(long itemId) {
-		this.itemId = itemId;
 	}
 
 	public Long getBuyPrice() {

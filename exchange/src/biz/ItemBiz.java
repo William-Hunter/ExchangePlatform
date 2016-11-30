@@ -14,13 +14,6 @@ public class ItemBiz extends ItemAccess {
 		super();
 	}
 
-	public boolean isIdExist(long id) {
-		if (selectItemName(id).isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 
 	public boolean isNameExist(String name, String owner) {
 		if (selectItemName(name, owner).isEmpty()) {
@@ -38,9 +31,8 @@ public class ItemBiz extends ItemAccess {
 		return search(key);
 	}
 
-	public boolean addItem(Item item) {
-		if (insert(item.getItemId(), item.getItemName(), item.getOwner(), item.getBuyPrice(), item.getDescription(),
-				item.getPictureLink()) == 1) {
+	public boolean addItem(Item item) throws SQLException, IllegalAccessException {
+		if (insert(item) == 1) {
 			return true;
 		}
 		return false;

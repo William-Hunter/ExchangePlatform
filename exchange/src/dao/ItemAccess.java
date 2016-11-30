@@ -55,12 +55,6 @@ public class ItemAccess extends Access {
 		Object[] param = { newLink, ItemId };
 		return update(sql, param);
 	}
-
-	protected String selectItemName(long ItemId) {
-		sql = "SELECT ItemName FROM iteminfo WHERE ItemId = ?";
-		Object[] param = { ItemId };
-		return (String) getValue(query(sql, param));
-	}
 	
 	protected String selectItemName(String ItemName,String Owner) {		//检索该用户是否已有该物品
 		sql = "SELECT ItemName FROM iteminfo WHERE ItemName = ? AND Owner= ?";

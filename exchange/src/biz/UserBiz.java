@@ -122,15 +122,7 @@ public class UserBiz extends UserAccess {
 		return false;
 	}
 
-	public Boolean testContect() {
-		boolean retu = false;
-		try {
-			retu = !conntect.isClosed();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return retu;
-	}
+
 
 	public ResultSet selectAll() {
 		sql = "SELECT * FROM userinfo;"; // 表名不能作为参数
@@ -145,21 +137,5 @@ public class UserBiz extends UserAccess {
 		return retu;
 	}
 
-	public boolean close() {
-		try {
-			sql = "";
-			
-			if(!resultset.wasNull()){
-				resultset.close();
-			}
-			conntect.close();
-			preparedstatement.close();
-			rsmd = null;
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
 
-	}
 }

@@ -1,19 +1,10 @@
 package bean;
 
-public class DealRecord {
-	public long dealId;
+public class DealRecord extends Table{
 	public String sender;
 	public String receiver;
 	public long itemId;
 	public String itemName;
-
-	public long getDealId() {
-		return dealId;
-	}
-
-	public void setDealId(long dealId) {
-		this.dealId = dealId;
-	}
 
 	public String getSender() {
 		return sender;
