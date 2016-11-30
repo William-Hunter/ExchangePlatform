@@ -22,6 +22,13 @@ public class Access {
     protected Class _class;
     protected Field[] fields;
 
+    protected void clear(){
+        this._class=null;
+        this.fields=null;
+        this.sql=null;
+        this.resultset=null;
+        this.preparedstatement=null;
+    }
 
     public Access() throws SQLException {
         try {
@@ -63,11 +70,7 @@ public class Access {
 
     }
 
-    protected void clear(){
-        this._class=null;
-        this.fields=null;
-        this.sql=null;
-    }
+
 
     public <T> boolean insert(T instanse) throws IllegalAccessException, SQLException, NoSuchFieldException {
         boolean retu=false;
@@ -179,16 +182,78 @@ public class Access {
 
         this.clear();
         return retu;
-
     }
 
-    public void select(){
+    public <T> boolean select(T instanse) throws SQLException, IllegalAccessException {
+        boolean retu=false;
+
+//        SELECT * FROM table WHERE column=? ANzD column=?;
+        sql=new StringBuilder("SELECT * FROM ");                                //组织sql
+        _class=instanse.getClass();
+        sql.append(_class.getSimpleName()+" WHERE ");
+        fields=_class.getDeclaredFields();
+        for(int index=0;index<fields.length;index++){
+            if(fields[index].get(instanse)==null){
+                continue;
+            }
+            sql.append(fields[index].getName()+"=? ");
+            if(index<fields.length-1){
+               sql.append("AND ");
+            }
+        }
+        sql.append(";");
+
+        preparedstatement=conntect.prepareStatement(sql.toString());                 //为sql的？赋值
+        int count=0;
+        for(int index=0;index<fields.length;index++){
+            if(fields[index].get(instanse)==null){
+                continue;
+            }else{
+                preparedstatement.setObject(count + 1, fields[index].get(instanse));
+                count++;
+            }
+        }
+        try{
+            resultset=preparedstatement.executeQuery();                             //执行sql
+            if(null!=resultset&&resultset.last()){
+                conntect.commit();
+                resultset.first();
+                for(int index=0;index<fields.length;index++){
+                    fields[index].set(instanse,resultset.getObject(fields[index].getName()));
+                }
+                retu=true;
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            conntect.rollback();
+        }
+
+        this.clear();
+        return retu;
+    }
 
 
 
 
+    public <M> List<M> selectALL(M table,String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
+        sql=new StringBuilder("SELECT * FROM "+table.getClass().getSimpleName()+" WHERR "+condition);
+        resultset=preparedstatement.executeQuery();
 
+        _class=table.getClass();
+        fields=_class.getDeclaredFields();
+        List<M> list=new ArrayList<M>();
 
+        M point=null;
+        for(resultset.first();!resultset.isAfterLast();resultset.next()){
+            point= (M) _class.newInstance();
+            for(int index=0;index<fields.length;index++){
+                fields[index].set(point,resultset.getObject(fields[index].getName()));
+            }
+            list.add(point);
+        }
+
+        this.clear();
+        return list;
     }
 
 
@@ -258,9 +323,6 @@ public class Access {
         }
         return retu;
     }
-
-
-
 
 //    protected List itemList(ResultSet resultset) {
 //        List itemlist = new ArrayList();

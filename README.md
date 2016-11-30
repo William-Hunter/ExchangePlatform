@@ -39,6 +39,7 @@
 * 在bean里设置primary key
 * 通用的曾删改查
 * 使用ids去标记主键，这样每个表都继承带ids的父类bean Table
+* action层的转向是一对一的，有必要保留这么多的action吗？使用标记来重定向
 
 
 
