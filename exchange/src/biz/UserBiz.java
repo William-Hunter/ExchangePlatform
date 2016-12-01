@@ -2,23 +2,28 @@ package biz;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import bean.*;
-import dao.*;
+import listener.AppListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class UserBiz extends UserAccess {
+import static com.sun.xml.internal.ws.policy.sourcemodel.wspolicy.XmlToken.Name;
+import static org.apache.commons.lang3.CharSetUtils.delete;
+
+public class UserBiz {
+	static Logger logger= LoggerFactory.getLogger(UserBiz.class);
 
 	public UserBiz() throws SQLException {
 		super();
 	}
 
 	// 针对user bean创建的方法
-	public Boolean register(User user, String authorize) throws SQLException, IllegalAccessException {
+	public static Boolean register(User user, String authorize) throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 		String email = user.getEmail();
 		user.setAuthorize(authorize);
 		user.setStatu(false);
-		if (selectEmail(email).isEmpty()) {
-			if (insert(user) == 1) {
+		if (AppListener.access.selectAll(user,"email="+email).size()<1) {
+			if (AppListener.access.insert(user)) {
 				return true;
 			}
 		}else{
@@ -27,115 +32,53 @@ public class UserBiz extends UserAccess {
 		return false;
 	}
 
-	public User login(User user) {
-		String email = user.getEmail();
-		String password = user.getPassword();
-		user.setStatu(false);
-		if ((!selectEmail(email).isEmpty()) && selectPassword(email).equals(password)) {
-			if (updateStatu(email, true) == 1) {
-				user.setAuthorize(selectAuthorize(email));
-				user.setPassword(selectPassword(email));
-				user.setStatu(selectStatu(email));
-				user.setJoinTime(selectJoinTime(email));
-				user.setName(selectName(email));
-				user.setStatu(true);
+	public static boolean login(User user) throws SQLException, IllegalAccessException {
+		if(AppListener.access.select(user)){
+			user.setStatu(true);
+			if(AppListener.access.update(user)){
+				return true;
 			}
-		}
-		return user;
-	}
-
-	public User logout(User user) {
-		String email = user.getEmail();
-		String password = user.getPassword();
-		if ((!selectEmail(email).isEmpty()) && selectPassword(email).equals(password)) {
-			if (updateStatu(email, false) == 1) {
-				user.setAuthorize(selectAuthorize(email));
-				user.setPassword(selectPassword(email));
-				user.setStatu(selectStatu(email));
-				user.setJoinTime(selectJoinTime(email));
-				user.setName(selectName(email));
-			}
-		}
-		return user;
-	}
-
-	public User logoff(User user) {
-		String email = user.getEmail();
-		String password = user.getPassword();
-		if (selectPassword(email).equals(password)) {
-			if (delete(email) == 1) {
-				user.setAuthorize("");
-				user.setStatu(false);
-			}
-		}
-		return user;
-	}
-
-	public User changePassword(User user, String newPassword) {
-		String email = user.getEmail();
-		String password = user.getPassword();
-		if ((!selectEmail(email).isEmpty()) && selectPassword(email).equals(password)) {
-			if (updatePassword(email, newPassword) == 1) {
-				user.setAuthorize(selectAuthorize(email));
-				user.setPassword(selectPassword(email));
-				user.setStatu(selectStatu(email));
-				user.setJoinTime(selectJoinTime(email));
-				user.setName(selectName(email));
-			}
-		}
-		return user;
-	}
-
-	public User recoverPassword(User user, String newPassword) {
-		
-		String email = user.getEmail();
-		String Name=user.getName();
-		if (selectName(email).equals(Name)) {
-			if (updatePassword(email, newPassword) == 1) {
-				user.setAuthorize(selectAuthorize(email));
-				user.setPassword(selectPassword(email));
-				user.setStatu(selectStatu(email));
-				user.setJoinTime(selectJoinTime(email));
-				user.setName(selectName(email));
-			}
-		}
-		return user;
-	}
-	
-	
-	
-	public User userInfo(User user){
-		String email = user.getEmail();
-		user.setName(selectName(email));
-		user.setJoinTime(selectJoinTime(email));
-		user.setStatu(selectStatu(email));
-		return user;		
-	}
-	
-
-	public Boolean shutDown() {
-		sql ="UPDATE user SET Statu=?";
-		Object[] param = { false };
-		if (update(sql, param) >= 0) {
-			return true;
 		}
 		return false;
 	}
 
-
-
-	public ResultSet selectAll() {
-		sql = "SELECT * FROM userinfo;"; // 表名不能作为参数
-		ResultSet retu = null;
-		try {
-			preparedstatement = conntect.prepareStatement(sql);
-			ResultSet rs = preparedstatement.executeQuery();
-			retu = rs;
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public static boolean logout(User user) throws SQLException, IllegalAccessException {
+		if(AppListener.access.select(user)){
+			user.setStatu(false);
+			if(AppListener.access.update(user)){
+				return true;
+			}
 		}
-		return retu;
+		return false;
 	}
 
+	//注销
+	public static boolean logoff(User user) throws SQLException, IllegalAccessException, NoSuchFieldException {
+		if(AppListener.access.select(user)){
+			if(AppListener.access.delete(user)){
+				user.setAuthorize("");
+				user.setStatu(false);
+				return true;
+			}
+		}
+		return false;
+	}
 
+	public static Boolean changePassword(User user, String newPassword) throws SQLException, IllegalAccessException {
+		if(AppListener.access.select(user)){
+			user.setPassword(newPassword);
+			if(AppListener.access.update(user)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean userInfo(User user) throws SQLException, IllegalAccessException {
+		if(AppListener.access.select(user)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

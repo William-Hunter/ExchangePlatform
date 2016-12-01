@@ -70,8 +70,6 @@ public class Access {
 
     }
 
-
-
     public <T> boolean insert(T instanse) throws IllegalAccessException, SQLException, NoSuchFieldException {
         boolean retu=false;
 
@@ -98,6 +96,7 @@ public class Access {
             logger.debug(fields[index].getName() + ":" + fields[index].get(instanse));         //字段值打印
             preparedstatement.setObject(index + 1, fields[index].get(instanse));
         }
+
         try {
             if(preparedstatement.executeUpdate()==1){                                           //执行sql，
                 conntect.commit();
@@ -125,6 +124,7 @@ public class Access {
         this.sql.append(this._class.getSimpleName()+" WHERE ids=?;");
         preparedstatement = conntect.prepareStatement(this.sql.toString());
         preparedstatement.setObject(1,_class.getDeclaredField("ids").get(instanse));
+
         try{
             if(1==preparedstatement.executeUpdate()){
                 conntect.commit();
@@ -160,7 +160,6 @@ public class Access {
         }
         sql.append(" WHERE ids=?;");
         logger.info(sql.toString());
-
         preparedstatement = conntect.prepareStatement(sql.toString());
         for (int index = 0; index < fields.length; index++) {
             if (fields[index].getName().equals("ids")) {
@@ -213,6 +212,7 @@ public class Access {
                 count++;
             }
         }
+
         try{
             resultset=preparedstatement.executeQuery();                             //执行sql
             if(null!=resultset&&resultset.last()){
@@ -232,11 +232,8 @@ public class Access {
         return retu;
     }
 
-
-
-
-    public <M> List<M> selectALL(M table,String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
-        sql=new StringBuilder("SELECT * FROM "+table.getClass().getSimpleName()+" WHERR "+condition);
+    public <M> List<M> selectAll(M table,String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
+        sql=new StringBuilder("SELECT * FROM "+table.getClass().getSimpleName()+" WHERE "+condition+";");
         resultset=preparedstatement.executeQuery();
 
         _class=table.getClass();
@@ -255,6 +252,10 @@ public class Access {
         this.clear();
         return list;
     }
+
+
+
+
 
 
 

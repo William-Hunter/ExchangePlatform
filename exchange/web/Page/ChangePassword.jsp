@@ -27,7 +27,7 @@
                                 <form action="ChangePassword" method="post">
                                         <div class="form-group">
                                                 <label for="OldPassword">旧密码:</label>
-                                                <input id="OldPassword" name="user.password" class="form-control" type="password" placeholder="请输入旧密码">
+                                                <input id="OldPassword" name="oldpassword" class="form-control" type="password" placeholder="请输入旧密码">
                                                 <s:fielderror fieldName="user.password"/>
                                                 </div>
                                         <div class="form-group">

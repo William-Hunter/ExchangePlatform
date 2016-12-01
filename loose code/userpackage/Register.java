@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import biz.UserBiz;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +31,13 @@ public class Register extends ActionSupport{
 		this.user = user;
 	}
 	
-	public String execute() throws SQLException, IllegalAccessException {
+	public String execute() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException, InstantiationException {
 		java.util.Date time = new java.util.Date();
 		logger.debug(time.toLocaleString());
 		user.setJoinTime(time.toLocaleString());
 		
 		if (user.getPassword().equals(repassword)) {
-			if (AppListener.userbiz.register(user, "guest")) {
+			if (UserBiz.register(user, "guest")) {
 				logger.debug("Create account success");
 				return SUCCESS;
 			} else {

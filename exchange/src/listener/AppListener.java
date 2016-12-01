@@ -10,10 +10,6 @@ import dao.*;
 
 public class AppListener implements ServletContextListener {
 	static Logger logger = LoggerFactory.getLogger(AppListener.class);
-	public static UserBiz userbiz;		//在下方的初始化呢函数里一定要初始化
-	public static ItemBiz itembiz;
-	public static CommentBiz commentbiz;
-	public static DealBiz dealbiz;
 	public static Access access;
 
 	@Override

@@ -14,7 +14,7 @@ import listener.AppListener;
 public class Logout  extends ActionSupport {
 	static Logger logger = LoggerFactory.getLogger(Logout.class);
 	
-	public String logout() {		
+	public String execute() {
 		
 		Map session = ActionContext.getContext().getSession();
 		User user = (User) session.get("user");

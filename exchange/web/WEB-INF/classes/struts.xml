@@ -13,27 +13,27 @@
 			<result name="success">/Page/Login.jsp</result>
 			<result name="input"></result>
 		</action>
-		<action name="Login" method="login" class="action.user.Login">
+		<action name="Login" method="login" class="action.user">
 			<result name="success">/Page/UserFace.jsp</result>
 			<result name="input"></result>
 		</action>
-		<action name="Logout" method="logout" class="action.user.Logout">
+		<action name="Logout" method="logout" class="action.user">
 			<result name="success">/index.html</result>
 			<result name="input"></result>
 		</action>
-		<action name="Logoff" method="logoff" class="action.user.Logoff">
+		<action name="Logoff" method="logoff" class="action.user">
 			<result name="success">/index.html</result>
 			<result name="input"></result>
 		</action>
-		<action name="ChangePassword" class="action.user.ChangePassword">
+		<action name="ChangePassword" method="changePassword" class="action.user">
 			<result name="success">/Page/UserFace.jsp</result>
 			<result name="input"></result>
 		</action>
-		<action name="RecoverPassword" class="action.user.RecoverPassword">
+		<action name="RecoverPassword" method="recoverPassword" class="action.user">
 			<result name="success">/Page/Login.jsp</result>
 			<result name="input"></result>
 		</action>
-		<action name="CheckUser" class="action.user.CheckUser">
+		<action name="CheckUser" method="checkUser" class="action.user">
 			<result name="success">/Page/UserInfo.jsp</result>
 			<result name="input"></result>
 

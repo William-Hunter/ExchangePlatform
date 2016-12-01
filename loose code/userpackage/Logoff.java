@@ -15,7 +15,7 @@ public class Logoff extends ActionSupport {
 	static Logger logger = LoggerFactory.getLogger(Logoff.class);
 
 
-	public String logoff() {
+	public String execute() {
 		Map session = ActionContext.getContext().getSession();
 		User user = (User) session.get("user");
 		user = AppListener.userbiz.logoff(user);
