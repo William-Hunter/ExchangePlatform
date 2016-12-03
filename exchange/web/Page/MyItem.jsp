@@ -86,10 +86,10 @@
 						alt="itemPicture">
 				</a>
 				<div class="row">
-					<a href="EditItem?item.itemId=<s:property value="#item.itemId"/>" class="col-md-6 edit">
+					<a href="EditItem?item.ids=<s:property value="#item.itemId"/>" class="col-md-6 edit">
 						编辑
 					</a>
-					<a href="RemoveItem?item.itemId=<s:property value="#item.itemId"/>
+					<a href="RemoveItem?item.ids=<s:property value="#item.itemId"/>
 					" class="col-md-6">删除
 				</a>
 			</div>

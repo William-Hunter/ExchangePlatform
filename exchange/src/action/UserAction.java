@@ -1,7 +1,6 @@
 package action;
 
 import bean.User;
-import biz.UserBiz;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
@@ -89,7 +88,8 @@ public class UserAction extends ActionSupport {
     public String logout() throws SQLException, IllegalAccessException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
-        if (UserBiz.logout(user)) {
+        user.setStatu(false);
+        if (AppListener.access.update(user)) {
             session.remove("user");
             session.put("user", user);
             ActionContext.getContext().setSession(session);
@@ -104,8 +104,9 @@ public class UserAction extends ActionSupport {
     public String logoff() throws IllegalAccessException, SQLException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
-        if (UserBiz.logoff(user)) {
+        if (AppListener.access.delete(user)) {
             session.remove("user");
+            user.setStatu(false);
             session.put("user", user);
             ActionContext.getContext().setSession(session);
             logger.debug("account logoff success");
@@ -119,8 +120,10 @@ public class UserAction extends ActionSupport {
     public String changePassword() throws SQLException, IllegalAccessException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
-        if (user.getPassword().equals(oldpassword)) {
-            if (UserBiz.changePassword(user, newpassword)) {
+
+        if(AppListener.access.select(user)){
+            user.setPassword(newpassword);
+            if(AppListener.access.update(user)){
                 session.remove("user");
                 session.put("user", user);
                 ActionContext.getContext().setSession(session);
@@ -133,17 +136,18 @@ public class UserAction extends ActionSupport {
     }
 
     public String recoverPassword() throws SQLException, IllegalAccessException {
-        if (UserBiz.changePassword(user, newpassword)) {
-            logger.debug("account password recover success!");
-            return SUCCESS;
-        } else {
-            return INPUT;
-
+        if(AppListener.access.select(user)){
+            user.setPassword(newpassword);
+            if(AppListener.access.update(user)){
+                logger.debug("account password recover success!");
+                return SUCCESS;
+            }
         }
+        return INPUT;
     }
 
     public String checkUser() throws SQLException, IllegalAccessException {
-        if (UserBiz.userInfo(user)) {
+        if (AppListener.access.select(user)) {
             Map session = ActionContext.getContext().getSession();
             session.put("checkuser", user);
             ActionContext.getContext().setSession(session);

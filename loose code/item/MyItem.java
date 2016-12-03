@@ -13,18 +13,13 @@ public class MyItem extends ActionSupport {
 	static Logger logger = LoggerFactory.getLogger(MyItem.class);
 
 	public String execute() {
-		Map session = ActionContext.getContext().getSession();
-		User user = (User) session.get("user");
-		List itemlist;
+
 		try{
 			itemlist = AppListener.itembiz.myItem(user.getEmail());
-			
 		}catch(java.lang.NullPointerException e){
-			logger.debug("没有查到数据");
-			return INPUT;
+
 		}	
-		session.put("itemlist", itemlist);
-		ActionContext.getContext().setSession(session);
+
 		return SUCCESS;
 	}
 

@@ -1,6 +1,5 @@
 package action;
 
-import action.item.AddItem;
 import bean.DealRecord;
 import bean.Item;
 import bean.User;
@@ -10,9 +9,9 @@ import listener.AppListener;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +24,15 @@ public class ItemAction extends ActionSupport {
     private String pictureUploadContentType;
     private String pictureUploadFileName;
     private String newOwner;
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getNewOwner() {
         return newOwner;
@@ -67,37 +75,29 @@ public class ItemAction extends ActionSupport {
     }
 
     public String addItem() throws IllegalAccessException, SQLException, NoSuchFieldException {
-
         User user = (User) ActionContext.getContext().getSession().get("user");
         // 设置图片所属者
-        item.setOwner(user.getEmail());// 设置物品所有者
+        item.setOwner(String.valueOf(user.getIds()));                           // 设置物品所有者
 
-        // 上传图片并且设置图片链接
-        String[] pictureName = getPictureUploadFileName().split("\\.");
+        String[] pictureName = this.getPictureUploadFileName().split("\\.");            // 上传图片并且设置图片链接
         String suffix = pictureName[pictureName.length - 1];
-
-        if (fileUpload(user, suffix)) {
-            item.setPictureLink(item.getItemName() + "." + suffix); // 设置图片路径并且上传图片
+        if (fileUpload(user, suffix)) {                                          //文件上载
+            item.setPictureLink(item.getItemName() + "." + suffix);             // 设置图片路径并且上传图片
             logger.debug("file upload success");
         } else {
             logger.debug("file upload fail");
             return INPUT;
         }
-
-        // 添加物品
-        if (AppListener.access.insert(item)) {
+        if (AppListener.access.insert(item)) {                      // 添加物品
             logger.debug("add item success");
             return SUCCESS;
         } else {
             logger.debug("add item fail");
             return INPUT;
         }
-        // return INPUT;
-
     }
 
     boolean fileUpload(User user, String suffix) {
-
         InputStream is;
         OutputStream os;
         try {
@@ -191,7 +191,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String edit() throws SQLException, IllegalAccessException {
+    public String editInit() throws SQLException, IllegalAccessException {
         Map session = ActionContext.getContext().getSession();
         if(AppListener.access.select(item)){
             session.put("item", item);
@@ -201,4 +201,72 @@ public class ItemAction extends ActionSupport {
             return INPUT;
         }
     }
+
+    public String submitChange() throws SQLException, IllegalAccessException {
+        if(AppListener.access.update(item)){
+            logger.info("物品信息修改成功");
+            return SUCCESS;
+        }else{
+            return NONE;
+        }
+    }
+
+    public String itemInfo() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+        Map session = ActionContext.getContext().getSession();
+        if(AppListener.access.select(item)){
+            session.put("item", item);
+            List<Item> commentlist=AppListener.access.selectAll(item,"CommentId="+item.getIds());
+            if(commentlist!=null){
+                session.put("commentlist", commentlist);
+                ActionContext.getContext().setSession(session);
+            }
+            return SUCCESS;
+        }else{
+            return INPUT;
+        }
+    }
+
+    public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+        Map session = ActionContext.getContext().getSession();
+        User user = (User) session.get("user");
+        List<Item> itemlist=AppListener.access.selectAll(item,"owner="+user.getIds());
+        if(itemlist!=null) {
+            session.put("itemlist", itemlist);
+            ActionContext.getContext().setSession(session);
+            return SUCCESS;
+        }
+        logger.debug("没有查到数据");
+        return INPUT;
+    }
+
+    public String deleteItem() throws NoSuchFieldException, IllegalAccessException, SQLException {
+        String rootPath=ServletActionContext.getServletContext().getRealPath("/Picture/Item/");
+        File deleteImg=new File(rootPath+item.getOwner()+"/"+item.getPictureLink());
+
+        if(AppListener.access.delete(item)){
+            if(deleteImg.delete()){
+                logger.debug("remove item success");
+                return SUCCESS;
+            }
+        }
+        logger.debug("remove item fail");
+        return INPUT;
+    }
+
+    public String searchItem() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+        List<Item> resultList=AppListener.access.selectAll(item,"itemName='"+key+"'");
+        if(resultList!=null){
+            Map session = ActionContext.getContext().getSession();
+            session.put("resultlist", resultList);
+            ActionContext.getContext().setSession(session);
+            return SUCCESS;
+        }else{
+            return INPUT;
+        }
+    }
+
+
+
+
+
 }

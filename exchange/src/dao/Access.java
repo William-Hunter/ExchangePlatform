@@ -77,6 +77,7 @@ public class Access {
         this.sql.append(_class.getSimpleName() + "(");
         StringBuilder value = new StringBuilder("VALUES(");
         this.fields = _class.getDeclaredFields();
+
         for (int index = 0; index < fields.length; index++) {
             this.sql.append(fields[index].getName());
             value.append("?");
@@ -147,26 +148,41 @@ public class Access {
         sql.append(_class.getSimpleName() + " SET ");
         Field[] fields = _class.getDeclaredFields();
 
+        int effective=0;
+        for(int index=0;index<fields.length;index++){
+            if(fields[index].get(instanse)==null){
+                continue;
+            }
+            effective++;
+        }
+        int count=0;
         for (int index = 0; index < fields.length; index++) {
             if (fields[index].getName().equals("ids")) {
                 continue;
             } else {
+                count++;
                 sql.append(fields[index].getName() + "=?");
-                if (index < fields.length - 1) {
+                if (count < effective) {
                     sql.append(",");
                 }
             }
         }
+
         sql.append(" WHERE ids=?;");
         logger.info(sql.toString());
+
         preparedstatement = conntect.prepareStatement(sql.toString());
         for (int index = 0; index < fields.length; index++) {
             if (fields[index].getName().equals("ids")) {
                 preparedstatement.setObject(fields.length, fields[index].get(instanse));
+                logger.info(fields.length+"="+fields[index].get(instanse));
             } else {
-                preparedstatement.setObject(index + 1, fields[index].get(instanse));
+                preparedstatement.setObject(index + 1,fields[index].get(instanse));
+                logger.info(index + 1+"="+fields[index].get(instanse));
             }
         }
+
+//        logger.debug("preparedstatement:"+preparedstatement.toString());
 
         try{
             if(1==preparedstatement.executeUpdate()){
@@ -190,25 +206,37 @@ public class Access {
         _class=instanse.getClass();
         sql.append(_class.getSimpleName()+" WHERE ");
         fields=_class.getDeclaredFields();
+
+        int effective=0;
         for(int index=0;index<fields.length;index++){
             if(fields[index].get(instanse)==null){
                 continue;
             }
-            sql.append(fields[index].getName()+"=? ");
-            if(index<fields.length-1){
-               sql.append("AND ");
-            }
+            effective++;
         }
-        sql.append(";");
-
-        preparedstatement=conntect.prepareStatement(sql.toString());                 //为sql的？赋值
         int count=0;
         for(int index=0;index<fields.length;index++){
             if(fields[index].get(instanse)==null){
                 continue;
+            }
+            count++;
+            sql.append(fields[index].getName()+"=? ");
+            if(count<effective){
+               sql.append("AND ");
+            }
+        }
+        sql.append(";");
+        logger.info("SQL:"+sql);
+
+        preparedstatement=conntect.prepareStatement(sql.toString());                 //为sql的？赋值
+        int i=0;
+        for(int index=0;index<fields.length;index++){
+            if(fields[index].get(instanse)==null){
+                continue;
             }else{
-                preparedstatement.setObject(count + 1, fields[index].get(instanse));
-                count++;
+                logger.info(i + 1+":"+fields[index].get(instanse));
+                preparedstatement.setObject(i + 1, fields[index].get(instanse));
+                i++;
             }
         }
 
@@ -237,6 +265,7 @@ public class Access {
 
         _class=table.getClass();
         fields=_class.getDeclaredFields();
+
         List<M> list=new ArrayList<M>();
 
         M point=null;
