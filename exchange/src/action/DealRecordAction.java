@@ -2,16 +2,14 @@ package action;
 
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import bean.*;
 import listener.AppListener;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class ActionDealRecord extends ActionSupport{
+public class DealRecordAction extends ActionSupport{
 	static Logger logger = LoggerFactory.getLogger(ActionDealRecord.class);
 	private User user;
 	

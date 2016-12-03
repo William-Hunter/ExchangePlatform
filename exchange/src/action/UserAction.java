@@ -7,7 +7,6 @@ import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -58,27 +57,33 @@ public class UserAction extends ActionSupport {
         logger.debug(time.toLocaleString());
         user.setJoinTime(time.toLocaleString());
         if (user.getPassword().equals(repassword)) {
-            if (UserBiz.register(user, "guest")) {
-                logger.debug("Create account success");
-                return SUCCESS;
-            } else {
-                logger.debug("Create account fail");
+            user.setAuthorize("guest");
+            user.setStatu(false);
+            if (AppListener.access.selectAll(user,"email="+user.getEmail()).size()<1) {
+                if (AppListener.access.insert(user)) {
+                    logger.debug("Create account success");
+                    return SUCCESS;
+                }
+            }else{
+                logger.debug("user is exsit,Create account fail");
             }
         }
         return INPUT;
     }
 
     public String login() throws SQLException, IllegalAccessException {
-        if (UserBiz.login(user)) {
-            logger.debug("account login success");
-            Map session = ActionContext.getContext().getSession();
-            session.put("user", user);
-            ActionContext.getContext().setSession(session);
-            return SUCCESS;
-        } else {
-            logger.debug("account login fail");
-            return INPUT;
+        if(AppListener.access.select(user)){
+            user.setStatu(true);
+            if(AppListener.access.update(user)){
+                logger.debug("account login success");
+                Map session = ActionContext.getContext().getSession();
+                session.put("user", user);
+                ActionContext.getContext().setSession(session);
+                return SUCCESS;
+            }
         }
+        logger.debug("account login fail");
+        return INPUT;
     }
 
     public String logout() throws SQLException, IllegalAccessException {

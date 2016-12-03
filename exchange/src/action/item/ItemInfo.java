@@ -2,15 +2,10 @@ package action.item;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-
 import bean.Item;
 import bean.User;
 import listener.AppListener;

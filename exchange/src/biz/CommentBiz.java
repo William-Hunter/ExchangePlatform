@@ -2,9 +2,7 @@ package biz;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import bean.*;
-import dao.*;
 
 public class CommentBiz extends CommentAccess {
 

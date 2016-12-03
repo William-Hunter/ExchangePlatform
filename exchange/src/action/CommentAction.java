@@ -6,7 +6,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import bean.*;
 import listener.AppListener;
 
-public class ActionComment extends ActionSupport {
+public class CommentAction extends ActionSupport {
 	static Logger logger = LoggerFactory.getLogger(ActionComment.class);
 	private Comment comment;
 

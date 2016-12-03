@@ -1,11 +1,8 @@
 package biz;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
 import bean.*;
-import dao.*;
 
 public class DealBiz extends DealAccess {
 

@@ -1,7 +1,5 @@
 package bean;
 
-import listener.AppListener;
-
 /**
  * Created by Administrator on 2016/11/29.
  */

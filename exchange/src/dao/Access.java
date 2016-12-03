@@ -7,10 +7,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import bean.*;
+
 
 public class Access {
     public Logger logger = LoggerFactory.getLogger(Access.class);

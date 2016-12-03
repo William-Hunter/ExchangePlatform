@@ -1,12 +1,10 @@
 package biz;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
+import java.sql.SQLException;
+import java.util.List;
 import bean.*;
-import dao.*;
+
 
 public class ItemBiz extends ItemAccess {
 
@@ -47,18 +45,7 @@ public class ItemBiz extends ItemAccess {
 	}
 
 	public Item deal(Item item, String newowner) {
-		if (updateOnwer(item.getItemId(), newowner) == 1) {
-			long itemid = item.getItemId();
-			item.setItemName(selectItemName(itemid));
-			item.setOwner(selectOwner(itemid));
-			item.setBuyPrice(selectPrice(itemid));
-			item.setDescription(selectDescription(itemid));
-			item.setPictureLink(selectPicture(itemid));
-			return item;
-		} else {
-			logger.debug("update fail");
-			return null;
-		}
+
 	}
 
 	public Item itemInfo(Item item) {
