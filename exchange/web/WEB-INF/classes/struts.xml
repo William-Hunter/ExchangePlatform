@@ -9,9 +9,9 @@
 
 
     <package name="default" namespace="/" extends="struts-default">
-        <action name="Register" class="action.UserAction">
+        <action name="Register" method="register"  class="action.UserAction">
             <result name="success">/Page/Login.jsp</result>
-            <result name="input"></result>
+            <result name="input">/Page/Register.jsp</result>
         </action>
         <action name="Login" method="login" class="action.UserAction">
             <result name="success">/Page/UserFace.jsp</result>

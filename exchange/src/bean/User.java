@@ -1,11 +1,13 @@
 package bean;
 
+import java.sql.Date;
+
 public class User extends Table {
 	public String email;
 	public String password;
 	public boolean statu;
 	public String authorize;
-	public String joinTime;
+	public Date joinTime;
 	public String name;
 
 	public String getEmail() {
@@ -32,11 +34,11 @@ public class User extends Table {
 		this.authorize = authorize;
 	}
 
-	public String getJoinTime() {
+	public Date getJoinTime() {
 		return joinTime;
 	}
 
-	public void setJoinTime(String joinTime) {
+	public void setJoinTime(Date joinTime) {
 		this.joinTime = joinTime;
 	}
 

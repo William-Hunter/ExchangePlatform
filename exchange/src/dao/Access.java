@@ -7,6 +7,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +104,7 @@ public class Access {
                 conntect.commit();
                 resultset = preparedstatement.getGeneratedKeys();
                 if (resultset.next()) {
-                    this._class.getDeclaredField("ids").set(instanse,resultset.getInt(1));           //将主键值存储到对象之中
+                    this._class.getSuperclass().getDeclaredField("ids").set(instanse,resultset.getInt(1));           //将主键值存储到对象之中
                     retu=true;
                 }
             }
@@ -139,7 +141,7 @@ public class Access {
         return retu;
     }
 
-    public <T> boolean update(T instanse) throws SQLException, IllegalAccessException {
+    public <T> boolean update(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
         boolean retu=false;
 
 //		UPDATE Person SET Address='Zhongshan23',City='Nanjing' WHERE LastName = 'Wilson'
@@ -167,22 +169,16 @@ public class Access {
                 }
             }
         }
-
         sql.append(" WHERE ids=?;");
         logger.info(sql.toString());
 
         preparedstatement = conntect.prepareStatement(sql.toString());
         for (int index = 0; index < fields.length; index++) {
-            if (fields[index].getName().equals("ids")) {
-                preparedstatement.setObject(fields.length, fields[index].get(instanse));
-                logger.info(fields.length+"="+fields[index].get(instanse));
-            } else {
-                preparedstatement.setObject(index + 1,fields[index].get(instanse));
-                logger.info(index + 1+"="+fields[index].get(instanse));
-            }
+            preparedstatement.setObject(index + 1,fields[index].get(instanse));
+            logger.info(index + 1+"="+fields[index].get(instanse));
         }
-
-//        logger.debug("preparedstatement:"+preparedstatement.toString());
+        preparedstatement.setObject(fields.length+1, _class.getSuperclass().getDeclaredField("ids").get(instanse));
+        logger.info(fields.length+1+"="+_class.getSuperclass().getDeclaredField("ids").get(instanse));
 
         try{
             if(1==preparedstatement.executeUpdate()){
@@ -198,7 +194,7 @@ public class Access {
         return retu;
     }
 
-    public <T> boolean select(T instanse) throws SQLException, IllegalAccessException {
+    public <T> boolean select(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
         boolean retu=false;
 
 //        SELECT * FROM table WHERE column=? ANzD column=?;
@@ -227,7 +223,6 @@ public class Access {
         }
         sql.append(";");
         logger.info("SQL:"+sql);
-
         preparedstatement=conntect.prepareStatement(sql.toString());                 //为sql的？赋值
         int i=0;
         for(int index=0;index<fields.length;index++){
@@ -242,15 +237,16 @@ public class Access {
 
         try{
             resultset=preparedstatement.executeQuery();                             //执行sql
-            if(null!=resultset&&resultset.last()){
+            if(resultset.last()){
                 conntect.commit();
                 resultset.first();
                 for(int index=0;index<fields.length;index++){
                     fields[index].set(instanse,resultset.getObject(fields[index].getName()));
                 }
+                _class.getSuperclass().getDeclaredField("ids").set(instanse,resultset.getLong("ids"));
                 retu=true;
             }
-        }catch (SQLException e){
+        }catch (SQLException|NullPointerException e){
             e.printStackTrace();
             conntect.rollback();
         }
@@ -261,12 +257,17 @@ public class Access {
 
     public <M> List<M> selectAll(M table,String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
         sql=new StringBuilder("SELECT * FROM "+table.getClass().getSimpleName()+" WHERE "+condition+";");
+        preparedstatement=conntect.prepareStatement(sql.toString());
         resultset=preparedstatement.executeQuery();
 
         _class=table.getClass();
         fields=_class.getDeclaredFields();
-
         List<M> list=new ArrayList<M>();
+
+        resultset.last();
+        if(resultset.getRow()<=0){
+            return list;
+        }
 
         M point=null;
         for(resultset.first();!resultset.isAfterLast();resultset.next()){
@@ -276,148 +277,8 @@ public class Access {
             }
             list.add(point);
         }
-
         this.clear();
         return list;
     }
-
-
-
-
-
-
-
-    // 两种提交方式
-    protected ResultSet query(String sql, Object[] param) {
-        try {
-            preparedstatement = conntect.prepareStatement(sql);
-            for (int i = 0; i < param.length; i++) {
-                preparedstatement.setObject(i + 1, param[i]);
-            }
-            resultset = preparedstatement.executeQuery();
-            conntect.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                conntect.rollback();
-            } catch (SQLException e1) {
-
-                e1.printStackTrace();
-            }
-        }
-        return resultset;
-    }
-
-    protected int update(String sql, Object[] param) {
-
-        int rows = 0;
-
-        try {
-            preparedstatement = conntect.prepareStatement(sql);
-            for (int i = 0; i < param.length; i++) {
-                preparedstatement.setObject(i + 1, param[i]);
-            }
-            rows = preparedstatement.executeUpdate();
-            conntect.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                conntect.rollback();
-            } catch (SQLException e1) {
-
-                e1.printStackTrace();
-            }
-        }
-        return rows;
-    }
-
-    protected Object getValue(ResultSet resultset) {
-        Object retu = null;
-        try {
-            rsmd = resultset.getMetaData();
-            List list = new ArrayList();
-            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                list.add(rsmd.getColumnName(i));
-            }
-
-            for (resultset.first(); !resultset.isAfterLast() && resultset != null; resultset.next()) {
-                for (Object e : list) {
-                    retu = resultset.getObject((String) e);
-                }
-            }
-        } catch (SQLException e) {
-            // e.printStackTrace();
-            logger.debug("查询无结果");
-            retu = "";
-        }
-        return retu;
-    }
-
-//    protected List itemList(ResultSet resultset) {
-//        List itemlist = new ArrayList();
-//
-//        try {
-//            for (resultset.first(); !resultset.isAfterLast() && resultset != null; resultset.next()) {
-//                if (resultset.wasNull()) {
-//                    return null;
-//                } else {
-//                    Item item = new Item();
-//                    item.setIds(resultset.getString("ItemId"));
-//                    item.setItemName(resultset.getString("ItemName"));
-//                    item.setOwner(resultset.getString("Owner"));
-//                    item.setBuyPrice(resultset.getInt("BuyPrice"));
-//                    item.setDescription(resultset.getString("Description"));
-//                    item.setPictureLink(resultset.getString("PictureLink"));
-//                    itemlist.add(item);
-//                }
-//            }
-//        } catch (SQLException e) {
-//        }
-//        return itemlist;
-//    }
-//
-//    protected List dealList(ResultSet resultset) {
-//        List deallist = new ArrayList();
-//
-//        try {
-//            for (resultset.first(); !resultset.isAfterLast() && resultset != null; resultset.next()) {
-//                if (resultset.wasNull()) {
-//                    return null;
-//                } else {
-//                    DealRecord record = new DealRecord();
-//                    record.setIds(resultset.getString("DealId"));
-//                    record.setSender(resultset.getString("Sender"));
-//                    record.setReceiver(resultset.getString("Receiver"));
-//                    record.setItemId(resultset.getInt("ItemId"));
-//                    record.setItemName(resultset.getString("ItemName"));
-//                    deallist.add(record);
-//                }
-//            }
-//        } catch (SQLException e) {
-//        }
-//        return deallist;
-//    }
-//
-//    protected List commentList(ResultSet resultset) {
-//        List commentlist = new ArrayList();
-//        try {
-//            for (resultset.first(); !resultset.isAfterLast() && resultset != null; resultset.next()) {
-//                if (resultset.wasNull()) {
-//                    return null;
-//                } else {
-//                    Comment comment = new Comment();
-//                    comment.setIds(resultset.getString("CommentId"));
-//                    comment.setSender(resultset.getString("Sender"));
-//                    comment.setReceiver(resultset.getString("Receiver"));
-//                    comment.setContext(resultset.getString("Context"));
-//                    comment.setAim(resultset.getInt("Aim"));
-//                    commentlist.add(comment);
-//                }
-//            }
-//        } catch (SQLException e) {
-//        }
-//        return commentlist;
-//    }
-
 
 }

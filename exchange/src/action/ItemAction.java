@@ -191,7 +191,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String editInit() throws SQLException, IllegalAccessException {
+    public String editInit() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         if(AppListener.access.select(item)){
             session.put("item", item);
@@ -202,7 +202,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String submitChange() throws SQLException, IllegalAccessException {
+    public String submitChange() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if(AppListener.access.update(item)){
             logger.info("物品信息修改成功");
             return SUCCESS;
@@ -211,7 +211,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String itemInfo() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public String itemInfo() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         if(AppListener.access.select(item)){
             session.put("item", item);

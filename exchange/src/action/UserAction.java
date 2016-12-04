@@ -6,6 +6,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -52,25 +54,25 @@ public class UserAction extends ActionSupport {
     }
 
     public String register() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException, InstantiationException {
-        java.util.Date time = new java.util.Date();
+        java.sql.Date time = new java.sql.Date(new java.util.Date().getDate());
         logger.debug(time.toLocaleString());
-        user.setJoinTime(time.toLocaleString());
+        user.setJoinTime(time);
         if (user.getPassword().equals(repassword)) {
             user.setAuthorize("guest");
             user.setStatu(false);
-            if (AppListener.access.selectAll(user,"email="+user.getEmail()).size()<1) {
+            if (AppListener.access.selectAll(user,"email='"+user.getEmail()+"'").size()<1) {
                 if (AppListener.access.insert(user)) {
                     logger.debug("Create account success");
                     return SUCCESS;
                 }
             }else{
-                logger.debug("user is exsit,Create account fail");
+                logger.debug("user is exsit,Create account fail.");
             }
         }
-        return INPUT;
+        return NONE;
     }
 
-    public String login() throws SQLException, IllegalAccessException {
+    public String login() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if(AppListener.access.select(user)){
             user.setStatu(true);
             if(AppListener.access.update(user)){
@@ -85,7 +87,7 @@ public class UserAction extends ActionSupport {
         return INPUT;
     }
 
-    public String logout() throws SQLException, IllegalAccessException {
+    public String logout() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
         user.setStatu(false);
@@ -117,7 +119,7 @@ public class UserAction extends ActionSupport {
         }
     }
 
-    public String changePassword() throws SQLException, IllegalAccessException {
+    public String changePassword() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
 
@@ -135,7 +137,7 @@ public class UserAction extends ActionSupport {
         return INPUT;
     }
 
-    public String recoverPassword() throws SQLException, IllegalAccessException {
+    public String recoverPassword() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if(AppListener.access.select(user)){
             user.setPassword(newpassword);
             if(AppListener.access.update(user)){
@@ -146,7 +148,7 @@ public class UserAction extends ActionSupport {
         return INPUT;
     }
 
-    public String checkUser() throws SQLException, IllegalAccessException {
+    public String checkUser() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if (AppListener.access.select(user)) {
             Map session = ActionContext.getContext().getSession();
             session.put("checkuser", user);
