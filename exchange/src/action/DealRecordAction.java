@@ -23,7 +23,7 @@ public class DealRecordAction extends ActionSupport {
         this.user = user;
     }
 
-    public String ShowRecord() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+    public String ShowRecord() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
         List<DealRecord> deallist = AppListener.access.selectAll(new DealRecord(), "sender=" + user.getIds() + " OR receiver=" + user.getIds());

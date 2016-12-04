@@ -88,7 +88,7 @@
     </column>
     <column id="30" parent="11" name="joinTime">
       <mandatory>1</mandatory>
-      <data-type>date|0</data-type>
+      <data-type>varchar(45)|0</data-type>
     </column>
     <column id="31" parent="11" name="name">
       <mandatory>1</mandatory>

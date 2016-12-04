@@ -7,7 +7,7 @@ public class User extends Table {
 	public String password;
 	public boolean statu;
 	public String authorize;
-	public Date joinTime;
+	public String joinTime;
 	public String name;
 
 	public String getEmail() {
@@ -34,11 +34,11 @@ public class User extends Table {
 		this.authorize = authorize;
 	}
 
-	public Date getJoinTime() {
+	public String getJoinTime() {
 		return joinTime;
 	}
 
-	public void setJoinTime(Date joinTime) {
+	public void setJoinTime(String joinTime) {
 		this.joinTime = joinTime;
 	}
 

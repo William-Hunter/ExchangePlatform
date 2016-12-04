@@ -226,7 +226,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         User user = (User) session.get("user");
         List<Item> itemlist=AppListener.access.selectAll(item,"owner="+user.getIds());
@@ -253,7 +253,7 @@ public class ItemAction extends ActionSupport {
         return INPUT;
     }
 
-    public String searchItem() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+    public String searchItem() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         List<Item> resultList=AppListener.access.selectAll(item,"itemName='"+key+"'");
         if(resultList!=null){
             Map session = ActionContext.getContext().getSession();

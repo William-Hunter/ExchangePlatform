@@ -6,9 +6,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -54,9 +54,8 @@ public class UserAction extends ActionSupport {
     }
 
     public String register() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException, InstantiationException {
-        java.sql.Date time = new java.sql.Date(new java.util.Date().getDate());
-        logger.debug(time.toLocaleString());
-        user.setJoinTime(time);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        user.setJoinTime(sdf.format(new Date().getTime()));
         if (user.getPassword().equals(repassword)) {
             user.setAuthorize("guest");
             user.setStatu(false);

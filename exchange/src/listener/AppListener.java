@@ -2,6 +2,8 @@ package listener;
 
 import java.sql.*;
 import javax.servlet.*;
+
+import bean.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dao.*;
@@ -26,6 +28,11 @@ public class AppListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		try {
+			access.updateAll(new User(),"statu=false","1=1");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		if(access.close()){
 			logger.debug("DB Access close finish");
 		}else{

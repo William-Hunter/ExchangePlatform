@@ -38,9 +38,10 @@
 -----------------------
 * <del>通用的增删改查</del>
 * <del>在bean里设置primary key,使用ids去标记主键，这样每个表都继承带ids的父类bean Table</del>
-* action层一个类里面只有一个接口，这样做太浪费，融合相关的action.
-* action与Biz是一一对应的，这样有必要封装开来吗？，判断返回值的代码也够多了。
-
+* <del>action层一个类里面只有一个接口，这样做太浪费，融合相关的action.</del>
+* <del>action与Biz是一一对应的，这样有必要封装开来吗？，判断返回值的代码也够多了。</del>
+* <del>加注释</del>
+* <del>时间不准</del>
 
 
 

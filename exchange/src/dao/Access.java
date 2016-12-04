@@ -8,7 +8,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +22,12 @@ public class Access {
     protected Class _class;
     protected Field[] fields;
 
-    protected void clear(){
-        this._class=null;
-        this.fields=null;
-        this.sql=null;
-        this.resultset=null;
-        this.preparedstatement=null;
+    protected void clear() {
+        this._class = null;
+        this.fields = null;
+        this.sql = null;
+        this.resultset = null;
+        this.preparedstatement = null;
     }
 
     public Access() throws SQLException {
@@ -72,9 +71,9 @@ public class Access {
     }
 
     public <T> boolean insert(T instanse) throws IllegalAccessException, SQLException, NoSuchFieldException {
-        boolean retu=false;
+        boolean retu = false;
 
-        this.sql = new StringBuilder("INSERT INTO ");                              //组织sql语句
+        this.sql = new StringBuilder("INSERT INTO ");                              //组织sql insert语句
         this._class = instanse.getClass();
         this.sql.append(_class.getSimpleName() + "(");
         StringBuilder value = new StringBuilder("VALUES(");
@@ -90,22 +89,23 @@ public class Access {
         }
         this.sql.append(") ");
         value.append(")");
-        this.sql.append(value+";");
+        this.sql.append(value + ";");
         System.out.println(sql);
 
-        preparedstatement = conntect.prepareStatement(this.sql.toString(),Statement.RETURN_GENERATED_KEYS);
-        for (int index = 0; index < fields.length; index++) {                                               //为？赋值
-            logger.debug(fields[index].getName() + ":" + fields[index].get(instanse));         //字段值打印
-            preparedstatement.setObject(index + 1, fields[index].get(instanse));
+        preparedstatement = conntect.prepareStatement(this.sql.toString(), Statement.RETURN_GENERATED_KEYS);//创造有返回主键的预编译语句
+
+        for (int index = 0; index < fields.length; index++) {                                              //为？赋值
+            logger.debug(fields[index].getName() + ":" + fields[index].get(instanse));                     //字段值打印
+            preparedstatement.setObject(index + 1, fields[index].get(instanse));                           //设置参数
         }
 
         try {
-            if(preparedstatement.executeUpdate()==1){                                           //执行sql，
+            if (preparedstatement.executeUpdate() == 1) {                                                      //执行sql，
                 conntect.commit();
                 resultset = preparedstatement.getGeneratedKeys();
                 if (resultset.next()) {
-                    this._class.getSuperclass().getDeclaredField("ids").set(instanse,resultset.getInt(1));           //将主键值存储到对象之中
-                    retu=true;
+                    this._class.getSuperclass().getDeclaredField("ids").set(instanse, resultset.getInt(1));//将主键值存储到对象之中，ids要从父类那里获取
+                    retu = true;
                 }
             }
         } catch (SQLException e) {                                                          //产生意外就回滚
@@ -118,21 +118,20 @@ public class Access {
     }
 
     public <T> boolean delete(T instanse) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        boolean retu=false;
+        boolean retu = false;
 
-        //DELETE FROM table WHERE ids=?;
-        this.sql = new StringBuilder("DELETE FROM ");
-        this._class=instanse.getClass();
-        this.sql.append(this._class.getSimpleName()+" WHERE ids=?;");
+        this.sql = new StringBuilder("DELETE FROM ");                               //组织delete语句
+        this._class = instanse.getClass();
+        this.sql.append(this._class.getSimpleName() + " WHERE ids=?;");
         preparedstatement = conntect.prepareStatement(this.sql.toString());
-        preparedstatement.setObject(1,_class.getDeclaredField("ids").get(instanse));
+        preparedstatement.setObject(1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//从父类获取ids，然后设置到jdbc的参数
 
-        try{
-            if(1==preparedstatement.executeUpdate()){
+        try {
+            if (1 == preparedstatement.executeUpdate()) {                       //执行sql
                 conntect.commit();
-                retu=true;
+                retu = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             conntect.rollback();
         }
@@ -141,51 +140,42 @@ public class Access {
         return retu;
     }
 
-    public <T> boolean update(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
-        boolean retu=false;
 
-//		UPDATE Person SET Address='Zhongshan23',City='Nanjing' WHERE LastName = 'Wilson'
-        sql = new StringBuilder("UPDATE ");
+    /**
+     * 修改的时候，条件为ids，获取所有的属性，然后赋值，不需要考虑属性为空的情况，毕竟有时候，操作的时候会把属性置成空的。
+     */
+    public <T> boolean update(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
+        boolean retu = false;
+
+        sql = new StringBuilder("UPDATE ");                             //组织sql update语句
         Class _class = instanse.getClass();
         sql.append(_class.getSimpleName() + " SET ");
         Field[] fields = _class.getDeclaredFields();
 
-        int effective=0;
-        for(int index=0;index<fields.length;index++){
-            if(fields[index].get(instanse)==null){
-                continue;
-            }
-            effective++;
-        }
-        int count=0;
         for (int index = 0; index < fields.length; index++) {
-            if (fields[index].getName().equals("ids")) {
-                continue;
-            } else {
-                count++;
-                sql.append(fields[index].getName() + "=?");
-                if (count < effective) {
-                    sql.append(",");
-                }
+            sql.append(fields[index].getName() + "=?");
+            if (index < fields.length - 1) {
+                sql.append(",");
             }
         }
         sql.append(" WHERE ids=?;");
         logger.info(sql.toString());
 
-        preparedstatement = conntect.prepareStatement(sql.toString());
-        for (int index = 0; index < fields.length; index++) {
-            preparedstatement.setObject(index + 1,fields[index].get(instanse));
-            logger.info(index + 1+"="+fields[index].get(instanse));
-        }
-        preparedstatement.setObject(fields.length+1, _class.getSuperclass().getDeclaredField("ids").get(instanse));
-        logger.info(fields.length+1+"="+_class.getSuperclass().getDeclaredField("ids").get(instanse));
+        preparedstatement = conntect.prepareStatement(sql.toString());                  //编译sql语句
 
-        try{
-            if(1==preparedstatement.executeUpdate()){
+        for (int index = 0; index < fields.length; index++) {
+            preparedstatement.setObject(index + 1, fields[index].get(instanse));                             //设置参数的值
+            logger.info(index + 1 + "=" + fields[index].get(instanse) + "\t");
+        }
+        preparedstatement.setObject(fields.length + 1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//设置参数ids的值
+        logger.info(fields.length + 1 + "=" + _class.getSuperclass().getDeclaredField("ids").get(instanse));
+
+        try {
+            if (1 == preparedstatement.executeUpdate()) {                               //执行sql
                 conntect.commit();
-                retu=true;
+                retu = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             conntect.rollback();
         }
@@ -194,59 +184,62 @@ public class Access {
         return retu;
     }
 
+
+    /**
+     * 查找的时候，条件只能是那些有值的属性
+     */
     public <T> boolean select(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
-        boolean retu=false;
+        boolean retu = false;
 
-//        SELECT * FROM table WHERE column=? ANzD column=?;
-        sql=new StringBuilder("SELECT * FROM ");                                //组织sql
-        _class=instanse.getClass();
-        sql.append(_class.getSimpleName()+" WHERE ");
-        fields=_class.getDeclaredFields();
+        sql = new StringBuilder("SELECT * FROM ");                                //组织sql
+        _class = instanse.getClass();
+        sql.append(_class.getSimpleName() + " WHERE ");
+        fields = _class.getDeclaredFields();
 
-        int effective=0;
-        for(int index=0;index<fields.length;index++){
-            if(fields[index].get(instanse)==null){
+        int effective = 0;
+        for (int index = 0; index < fields.length; index++) {                               //计算有效的属性个数
+            if (fields[index].get(instanse) == null) {
                 continue;
             }
             effective++;
         }
-        int count=0;
-        for(int index=0;index<fields.length;index++){
-            if(fields[index].get(instanse)==null){
+        int count = 0;
+        for (int index = 0; index < fields.length; index++) {                               //sql语句的条件按照对象的有值属性去设置
+            if (fields[index].get(instanse) == null) {
                 continue;
             }
             count++;
-            sql.append(fields[index].getName()+"=? ");
-            if(count<effective){
-               sql.append("AND ");
+            sql.append(fields[index].getName() + "=? ");
+            if (count < effective) {
+                sql.append("AND ");
             }
         }
         sql.append(";");
-        logger.info("SQL:"+sql);
-        preparedstatement=conntect.prepareStatement(sql.toString());                 //为sql的？赋值
-        int i=0;
-        for(int index=0;index<fields.length;index++){
-            if(fields[index].get(instanse)==null){
+        logger.info("SQL:" + sql);
+        preparedstatement = conntect.prepareStatement(sql.toString());                //编译sql语句
+        int i = 0;                                                                    //计算有效的个数
+        for (int index = 0; index < fields.length; index++) {
+            if (fields[index].get(instanse) == null) {                                  //如果当前字段为空，就跳过
                 continue;
-            }else{
-                logger.info(i + 1+":"+fields[index].get(instanse));
-                preparedstatement.setObject(i + 1, fields[index].get(instanse));
+            } else {
+                logger.info(i + 1 + ":" + fields[index].get(instanse) + "\t");
+                preparedstatement.setObject(i + 1, fields[index].get(instanse));    //把对象的当前字段加入到jdbc的参数中去，
                 i++;
             }
         }
 
-        try{
-            resultset=preparedstatement.executeQuery();                             //执行sql
-            if(resultset.last()){
+        try {
+            resultset = preparedstatement.executeQuery();                             //执行sql
+            if (resultset.last()) {
                 conntect.commit();
                 resultset.first();
-                for(int index=0;index<fields.length;index++){
-                    fields[index].set(instanse,resultset.getObject(fields[index].getName()));
+                for (int index = 0; index < fields.length; index++) {
+                    fields[index].set(instanse, resultset.getObject(fields[index].getName()));
                 }
-                _class.getSuperclass().getDeclaredField("ids").set(instanse,resultset.getLong("ids"));
-                retu=true;
+                _class.getSuperclass().getDeclaredField("ids").set(instanse, resultset.getLong("ids"));//从结果集中获取ids属性存储到超类的ids
+                retu = true;
             }
-        }catch (SQLException|NullPointerException e){
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
             conntect.rollback();
         }
@@ -255,30 +248,58 @@ public class Access {
         return retu;
     }
 
-    public <M> List<M> selectAll(M table,String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
-        sql=new StringBuilder("SELECT * FROM "+table.getClass().getSimpleName()+" WHERE "+condition+";");
-        preparedstatement=conntect.prepareStatement(sql.toString());
-        resultset=preparedstatement.executeQuery();
+    /**
+     * table是表的bean对象，condition是查询的条件
+     * */
+    public <M> List<M> selectAll(M table, String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+        _class = table.getClass();
+        sql = new StringBuilder("SELECT * FROM " + _class.getSimpleName() + " WHERE " + condition + ";");//组织sql语句
+        preparedstatement = conntect.prepareStatement(sql.toString());                      //编译sql语句
 
-        _class=table.getClass();
-        fields=_class.getDeclaredFields();
-        List<M> list=new ArrayList<M>();
+        fields = _class.getDeclaredFields();                                    //获取公有的
+        List<M> list = new ArrayList<M>();                                      //创建存储返回值的list
 
+        resultset = preparedstatement.executeQuery();                           //执行查询
         resultset.last();
-        if(resultset.getRow()<=0){
+        if (resultset.getRow() <= 0) {
             return list;
         }
 
-        M point=null;
-        for(resultset.first();!resultset.isAfterLast();resultset.next()){
-            point= (M) _class.newInstance();
-            for(int index=0;index<fields.length;index++){
-                fields[index].set(point,resultset.getObject(fields[index].getName()));
+        M point = null;                                                         //将结果集中的数据挨个添加到list里
+        for (resultset.first(); !resultset.isAfterLast(); resultset.next()) {
+            point = (M) _class.newInstance();
+            for (int index = 0; index < fields.length; index++) {
+                fields[index].set(point, resultset.getObject(fields[index].getName())); //获取列值存储到字段
             }
+            _class.getSuperclass().getDeclaredField("ids").set(point,resultset.getObject("ids"));//获取ids字段的值存储到父类的ids属性
             list.add(point);
         }
         this.clear();
         return list;
     }
+
+    /**
+     * table是表的bean对象，content是字段对应更改的值，condition是查询的条件
+     * example: updateAll(user,"statu=false","1=1");
+     * */
+    public <M> boolean updateAll(M table, String content, String condition) throws SQLException {
+        // UPDATE table SET a=1,b=2,c=3 WHERE mark=0001;
+        sql = new StringBuilder("UPDATE " + table.getClass().getSimpleName() + " SET " + content + " WHERE " + condition + ";");//组织sql语句
+        logger.debug(sql.toString());
+        try {
+            preparedstatement = conntect.prepareStatement(sql.toString());      //编译sql
+            if (preparedstatement.executeUpdate() > 0) {                        //执行sql，并且判断执行是否成功
+                conntect.commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            conntect.rollback();                                            //意外回滚
+            return false;
+        }
+    }
+
 
 }
