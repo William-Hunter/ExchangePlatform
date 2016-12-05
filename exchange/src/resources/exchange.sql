@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-11-30 22:25:08
+Date: 2016-12-05 13:53:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -78,10 +78,10 @@ CREATE TABLE `user` (
   `password` varchar(45) NOT NULL,
   `statu` tinyint(1) unsigned NOT NULL,
   `authorize` varchar(45) NOT NULL,
-  `joinTime` date NOT NULL,
+  `joinTime` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`ids`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
