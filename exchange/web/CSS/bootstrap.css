@@ -5771,7 +5771,7 @@ button.close {
 
 
 
-/*auther add in*/
+/*自己添加的*/
 
 
 .col-center-block {
@@ -5784,7 +5784,7 @@ button.close {
 }
 body {
   margin: 0;/*  设置全局背景       */
-  background-image: url("../Picture/background.jpg");
+  background-image: url("E:\workspace\ExchangePlatform\Picture\background.jpg");
 }
 h3 {
   text-align: center;

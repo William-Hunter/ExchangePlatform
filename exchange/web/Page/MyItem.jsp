@@ -27,7 +27,7 @@
                                         class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="<%=path%>/Page/UserFace.jsp"> <img
-                                src="<%=path%>/Picture/Logo.jpg" alt="logo fail"></a>
+								src="E:\workspace\ExchangePlatform\Picture\Logo.jpg" alt="logo fail"></a>
                 </div>
                 <div id="navbar-collapse" class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right">
@@ -77,12 +77,7 @@
 						href="ItemInfo?item.itemId=<s:property value="#item.itemId" />
 					">
 					<img
-						src="<%=path%>
-					/Picture/Item/
-					<s:property value="#item.owner" />
-					/
-					<s:property value="#item.pictureLink" />
-					"
+						src="<s:property value="#item.pictureLink" />"
 						alt="itemPicture">
 				</a>
 				<div class="row">

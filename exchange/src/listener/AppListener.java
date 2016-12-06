@@ -1,9 +1,11 @@
 package listener;
 
 import java.sql.*;
+import java.util.Map;
 import javax.servlet.*;
 
 import bean.User;
+import com.opensymphony.xwork2.ActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dao.*;
@@ -11,10 +13,13 @@ import dao.*;
 public class AppListener implements ServletContextListener {
 	static Logger logger = LoggerFactory.getLogger(AppListener.class);
 	public static Access access;
+	public static String pictureFolder;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		ServletContext sc = event.getServletContext();
+		pictureFolder="E:\\workspace\\ExchangePlatform\\Picture";
+		Map session = ActionContext.getContext().getSession();
+		session.put("pictureFolder", pictureFolder);
 		try {
 			access=new Access();
 			

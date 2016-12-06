@@ -28,7 +28,7 @@
                                 
                         </button>
                         <a class="navbar-brand" href="<%=path%>/Page/UserFace.jsp"> <img
-                                src="<%=path%>/Picture/Logo.jpg" alt="logo fail"></a>
+                                src="E:\workspace\ExchangePlatform\Picture\Logo.jpg" alt="logo fail"></a>
                 </div>
                 <div id="navbar-collapse" class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right">

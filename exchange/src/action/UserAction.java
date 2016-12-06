@@ -73,16 +73,17 @@ public class UserAction extends ActionSupport {
 
     public String login() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if(AppListener.access.select(user)){
+            logger.debug("已查到用户，正在登录");
             user.setStatu(true);
             if(AppListener.access.update(user)){
-                logger.debug("account login success");
+                logger.debug("登录成功，正在跳转。。。");
                 Map session = ActionContext.getContext().getSession();
                 session.put("user", user);
                 ActionContext.getContext().setSession(session);
                 return SUCCESS;
             }
         }
-        logger.debug("account login fail");
+        logger.debug("没有这个账户");
         return INPUT;
     }
 

@@ -81,8 +81,13 @@ public class ItemAction extends ActionSupport {
 
         String[] pictureName = this.getPictureUploadFileName().split("\\.");            // 上传图片并且设置图片链接
         String suffix = pictureName[pictureName.length - 1];
-        if (fileUpload(user, suffix)) {                                          //文件上载
-            item.setPictureLink(item.getItemName() + "." + suffix);             // 设置图片路径并且上传图片
+
+        String imgFolder = AppListener.pictureFolder+"/Item/"+ user.getIds();
+
+        String imgname=item.getItemName()+"."+suffix;
+
+        if (fileUpload(imgFolder, imgname)) {                                          //文件上载
+            item.setPictureLink(imgFolder+"/"+imgname);             // 设置图片路径并且上传图片
             logger.debug("file upload success");
         } else {
             logger.debug("file upload fail");
@@ -97,20 +102,23 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    boolean fileUpload(User user, String suffix) {
+    boolean fileUpload(String imgFolder, String imgname) {
         InputStream is;
         OutputStream os;
         try {
             is = new FileInputStream(pictureUpload);
 
-            String imgFolder = ServletActionContext.getServletContext().getRealPath("/Picture/Item/") + user.getEmail();
 
             File folder = new File(imgFolder);
             if (!folder.exists() && !folder.isDirectory()) {
-                folder.mkdirs();
-                logger.debug("Create Direction finish");
+                if(folder.mkdirs()){
+                    logger.debug("Create Direction("+imgFolder+") finish");
+                }else{
+                    logger.debug("Create Direction("+imgFolder+") fail");
+                }
+
             }
-            File toFile = new File(imgFolder, item.getItemName() + "." + suffix);
+            File toFile = new File(imgFolder, imgname);
             os = new FileOutputStream(toFile);
             byte[] buffer = new byte[1024];
             for (int length = 0; (length = is.read(buffer)) > 0; ) {
@@ -229,7 +237,7 @@ public class ItemAction extends ActionSupport {
     public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         User user = (User) session.get("user");
-        List<Item> itemlist=AppListener.access.selectAll(item,"owner="+user.getIds());
+        List<Item> itemlist=AppListener.access.selectAll(new Item(),"owner="+user.getIds());
         if(itemlist!=null) {
             session.put("itemlist", itemlist);
             ActionContext.getContext().setSession(session);

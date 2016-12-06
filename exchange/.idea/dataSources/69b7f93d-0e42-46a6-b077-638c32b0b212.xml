@@ -121,7 +121,7 @@
     </column>
     <column id="38" parent="12" name="pictureLink">
       <mandatory>1</mandatory>
-      <data-type>varchar(45)|0</data-type>
+      <data-type>varchar(145)|0</data-type>
     </column>
     <key id="39" parent="12" name="PRIMARY">
       <columns>ids</columns>
