@@ -1,9 +1,9 @@
 package listener;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.*;
-
 import bean.User;
 import com.opensymphony.xwork2.ActionContext;
 import org.slf4j.Logger;
@@ -17,9 +17,11 @@ public class AppListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		pictureFolder="E:\\workspace\\ExchangePlatform\\Picture";
-		Map session = ActionContext.getContext().getSession();
-		session.put("pictureFolder", pictureFolder);
+//		此时还没有ActionContent，怎么调用都是null
+//		Map session = ActionContext.getContext().getSession();
+//		pictureFolder="E:\\workspace\\ExchangePlatform\\Picture";
+//		session.put("pictureFolder", pictureFolder);
+
 		try {
 			access=new Access();
 			

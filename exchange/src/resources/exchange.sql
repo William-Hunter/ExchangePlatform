@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-12-05 13:53:05
+Date: 2016-12-06 17:57:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -59,14 +59,13 @@ CREATE TABLE `item` (
   `owner` varchar(45) NOT NULL,
   `buyPrice` int(10) unsigned NOT NULL,
   `description` varchar(100) NOT NULL,
-  `pictureLink` varchar(45) NOT NULL,
+  `pictureLink` varchar(145) NOT NULL,
   PRIMARY KEY (`ids`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of item
 -- ----------------------------
-INSERT INTO `item` VALUES ('1', '', '', '10', '', '');
 
 -- ----------------------------
 -- Table structure for user
@@ -81,8 +80,9 @@ CREATE TABLE `user` (
   `joinTime` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`ids`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+INSERT INTO `user` VALUES ('aaa@qq.com', '1', '1234', '0', 'guest', '2016-12-05 14:48:37', 'william');

@@ -5784,7 +5784,7 @@ button.close {
 }
 body {
   margin: 0;/*  设置全局背景       */
-  background-image: url("E:\workspace\ExchangePlatform\Picture\background.jpg");
+  background-image: url("/Exchange/Picture/background.jpg");
 }
 h3 {
   text-align: center;
@@ -5796,16 +5796,13 @@ h3 {
 p {
   font-size: 18px;
 }
-
 /*
 设置.navbar-brand的内边距padding为0  
 */
 .item-back{
   padding: 15px 15px 5px 15px;
   margin: 15px 15px 5px 15px;
-
   /*background-color: gray;*/
-
 }
 
 .item-back img{

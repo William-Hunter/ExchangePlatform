@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class Access {
     public Logger logger = LoggerFactory.getLogger(Access.class);
     protected StringBuilder sql;
+    protected DataSource ds;
     protected ResultSet resultset;
     protected Connection conntect;
     protected PreparedStatement preparedstatement;
@@ -28,13 +29,14 @@ public class Access {
         this.sql = null;
         this.resultset = null;
         this.preparedstatement = null;
+        this.ds=null;
     }
 
     public Access() throws SQLException {
         try {
             Context context = new InitialContext();
             context = (Context) context.lookup("java:/comp/env");
-            DataSource ds = (DataSource) context.lookup("MysqlExchange");
+            ds = (DataSource) context.lookup("MysqlExchange");
             conntect = ds.getConnection();
             conntect.setAutoCommit(false);
         } catch (NamingException e1) {
@@ -67,15 +69,26 @@ public class Access {
             e.printStackTrace();
             return false;
         }
-
+    }
+    public boolean keepConnection() throws SQLException {
+        try{
+            preparedstatement=conntect.prepareStatement("SELECT 1;");
+            resultset = preparedstatement.executeQuery();
+        }catch (SQLException e){
+            conntect=ds.getConnection();
+            conntect.setAutoCommit(false);
+            e.printStackTrace();
+        }finally {
+            return !conntect.isClosed();
+        }
     }
 
     public <T> boolean insert(T instanse) throws IllegalAccessException, SQLException, NoSuchFieldException {
+        keepConnection();
         boolean retu = false;
-
         this.sql = new StringBuilder("INSERT INTO ");                              //组织sql insert语句
         this._class = instanse.getClass();
-        this.sql.append(_class.getSimpleName() + "(");
+        this.sql.append(_class.getSimpleName().toLowerCase() + "(");
         StringBuilder value = new StringBuilder("VALUES(");
         this.fields = _class.getDeclaredFields();
 
@@ -118,11 +131,12 @@ public class Access {
     }
 
     public <T> boolean delete(T instanse) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        keepConnection();
         boolean retu = false;
 
         this.sql = new StringBuilder("DELETE FROM ");                               //组织delete语句
         this._class = instanse.getClass();
-        this.sql.append(this._class.getSimpleName() + " WHERE ids=?;");
+        this.sql.append(this._class.getSimpleName().toLowerCase() + " WHERE ids=?;");
         preparedstatement = conntect.prepareStatement(this.sql.toString());
         preparedstatement.setObject(1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//从父类获取ids，然后设置到jdbc的参数
 
@@ -145,11 +159,12 @@ public class Access {
      * 修改的时候，条件为ids，获取所有的属性，然后赋值，不需要考虑属性为空的情况，毕竟有时候，操作的时候会把属性置成空的。
      */
     public <T> boolean update(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
+        keepConnection();
         boolean retu = false;
 
         sql = new StringBuilder("UPDATE ");                             //组织sql update语句
         Class _class = instanse.getClass();
-        sql.append(_class.getSimpleName() + " SET ");
+        sql.append(_class.getSimpleName().toLowerCase() + " SET ");
         Field[] fields = _class.getDeclaredFields();
 
         for (int index = 0; index < fields.length; index++) {
@@ -189,11 +204,12 @@ public class Access {
      * 查找的时候，条件只能是那些有值的属性
      */
     public <T> boolean select(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
+        keepConnection();
         boolean retu = false;
 
         sql = new StringBuilder("SELECT * FROM ");                                //组织sql
         _class = instanse.getClass();
-        sql.append(_class.getSimpleName() + " WHERE ");
+        sql.append(_class.getSimpleName().toLowerCase() + " WHERE ");
         fields = _class.getDeclaredFields();
 
         int effective = 0;
@@ -250,10 +266,11 @@ public class Access {
 
     /**
      * table是表的bean对象，condition是查询的条件
-     * */
+     */
     public <M> List<M> selectAll(M table, String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+        keepConnection();
         _class = table.getClass();
-        sql = new StringBuilder("SELECT * FROM " + _class.getSimpleName() + " WHERE " + condition + ";");//组织sql语句
+        sql = new StringBuilder("SELECT * FROM " + _class.getSimpleName().toLowerCase() + " WHERE " + condition + ";");//组织sql语句
         preparedstatement = conntect.prepareStatement(sql.toString());                      //编译sql语句
 
         fields = _class.getDeclaredFields();                                    //获取公有的
@@ -271,7 +288,7 @@ public class Access {
             for (int index = 0; index < fields.length; index++) {
                 fields[index].set(point, resultset.getObject(fields[index].getName())); //获取列值存储到字段
             }
-            _class.getSuperclass().getDeclaredField("ids").set(point,resultset.getObject("ids"));//获取ids字段的值存储到父类的ids属性
+            _class.getSuperclass().getDeclaredField("ids").set(point, resultset.getObject("ids"));//获取ids字段的值存储到父类的ids属性
             list.add(point);
         }
         this.clear();
@@ -281,10 +298,11 @@ public class Access {
     /**
      * table是表的bean对象，content是字段对应更改的值，condition是查询的条件
      * example: updateAll(user,"statu=false","1=1");
-     * */
+     */
     public <M> boolean updateAll(M table, String content, String condition) throws SQLException {
+        keepConnection();
         // UPDATE table SET a=1,b=2,c=3 WHERE mark=0001;
-        sql = new StringBuilder("UPDATE " + table.getClass().getSimpleName() + " SET " + content + " WHERE " + condition + ";");//组织sql语句
+        sql = new StringBuilder("UPDATE " + table.getClass().getSimpleName().toLowerCase() + " SET " + content + " WHERE " + condition + ";");//组织sql语句
         logger.debug(sql.toString());
         try {
             preparedstatement = conntect.prepareStatement(sql.toString());      //编译sql

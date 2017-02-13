@@ -36,12 +36,14 @@
 
 ###reframe
 -----------------------
+* <del>mysql for linux表名区分大小写，在dao层要设定小写字母 </del>
 * <del>通用的增删改查</del>
 * <del>在bean里设置primary key,使用ids去标记主键，这样每个表都继承带ids的父类bean Table</del>
 * <del>action层一个类里面只有一个接口，这样做太浪费，融合相关的action.</del>
 * <del>action与Biz是一一对应的，这样有必要封装开来吗？，判断返回值的代码也够多了。</del>
 * <del>加注释</del>
 * <del>时间不准</del>
+* 图片没有独立出来，每次重新启动项目都会清空图片文件夹，尝试放在数据库里面。
 
 
 

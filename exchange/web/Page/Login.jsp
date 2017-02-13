@@ -42,7 +42,7 @@
                                        
                                         <div class="col-md-12 col-center-block">
                                                 <button type="submit" class="btn btn-default">登录</button>
-                                                <a href="/Page/Register.jsp">没有账户，立刻注册</a>
+                                                <a href="Register.jsp">没有账户，立刻注册</a>
                                         </div>
                                 </form>
                         </div>
