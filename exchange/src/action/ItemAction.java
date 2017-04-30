@@ -107,8 +107,6 @@ public class ItemAction extends ActionSupport {
         OutputStream os;
         try {
             is = new FileInputStream(pictureUpload);
-
-
             File folder = new File(imgFolder);
             if (!folder.exists() && !folder.isDirectory()) {
                 if(folder.mkdirs()){
@@ -116,7 +114,6 @@ public class ItemAction extends ActionSupport {
                 }else{
                     logger.debug("Create Direction("+imgFolder+") fail");
                 }
-
             }
             File toFile = new File(imgFolder, imgname);
             os = new FileOutputStream(toFile);
