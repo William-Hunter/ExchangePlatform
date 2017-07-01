@@ -35,8 +35,8 @@
                             value="#record.sender"/></a> 买了 <a
                         href="${pageContext.request.contextPath}/CheckUser?checkUser.email=<s:property value="#record.receiver"/>"><s:property
                         value="#record.receiver"/></a> 的 <a
-                        href="${pageContext.request.contextPath}/ItemInfo?item.itemId=<s:property
-                                                                value="#record.itemId"/>"><s:property
+                        href="${pageContext.request.contextPath}/Item/detail?item.ids=<s:property
+                                                                value="#record.ids"/>"><s:property
                         value="#record.itemName"/></a>
                 </p>
             </div>

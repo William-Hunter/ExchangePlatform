@@ -5,7 +5,7 @@
 <struts>
 
     <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
-    <constant name="struts.devMode" value="false"/>
+    <constant name="struts.devMode" value="true"/>
 
 
     <package name="default" namespace="/" extends="struts-default">
@@ -36,72 +36,60 @@
         <action name="CheckUser" method="checkUser" class="action.UserAction">
             <result name="success">/Page/UserInfo.jsp</result>
             <result name="input"></result>
-
-        </action>
-
-
-        <action name="MyItem" method="myItem" class="action.ItemAction">
-            <result name="success">/Page/MyItem.jsp</result>
-            <result name="input"></result>
-        </action>
-        <action name="ItemInfo" method="itemInfo" class="action.ItemAction">
-            <result name="success">/Page/ItemInfo.jsp</result>
-            <result name="input"></result>
-        </action>
-
-
-        <action name="RemoveItem" method="deleteItem" class="action.ItemAction">
-            <result name="success" type="chain">MyItem</result>
-            <result name="input">/Page/MyItem.jsp</result>
-        </action>
-        <action name="ItemInfo" method="itemInfo" class="action.ItemAction">
-            <result name="success">/Page/ItemInfo.jsp</result>
-            <result name="input">/Page/MyItem.jsp</result>
-        </action>
-        <action name="SearchItem" method="searchItem" class="action.ItemAction">
-            <result name="success">/Page/SearchResult.jsp</result>
-            <result name="input">/Page/UserFace.jsp</result>
-        </action>
-        <action name="Deal" method="deal" class="action.ItemAction">
-            <result name="success" type="chain">MyItem</result>
-            <result name="input">/Page/ItemInfo.jsp</result>
-        </action>
-
-
-        <action name="BuyRecord" method="ShowRecord" class="action.DealRecordAction">
-            <result name="success">/Page/DealList.jsp</result>
-            <result name="input"></result>
-        </action>
-
-
-        <action name="AddComment" method="addComment" class="action.CommentAction">
-            <result name="success" type="redirect">
-                ItemInfo?item.itemId=${#session.item.itemId}
-            </result>
-            <result name="input"></result>
-        </action>
-        <action name="DeleteComment" method="deleteComment" class="action.CommentAction">
-            <result name="success" type="redirect">
-                ItemInfo?item.itemId=${#session.item.itemId}
-            </result>
-            <result name="input"></result>
-        </action>
-
-        <action name="EditItemInit" class="action.ItemAction" method="editInit">
-            <result name="success">/Page/EditItem.jsp</result>
-            <result name="input"></result>
-        </action>
-
-        <action name="SubmitItem" class="action.ItemAction" method="submitItem">
-            <result name="success" type="chain">MyItem</result>
-            <result name="input"></result>
         </action>
 
         <action name="ImageAPI" method="get" class="action.ImageStream"/>
-
-
-
     </package>
+
+    <package name="item" namespace="/Item" extends="struts-default">
+        <action name="EditInit" class="action.ItemAction" method="editInit">
+            <result name="success">/Page/EditItem.jsp</result>
+            <result name="input"></result>
+        </action>
+        <action name="Edit" class="action.ItemAction" method="edit">
+            <result name="success" type="redirect">/Page/MyItem.jsp</result>
+            <result name="input"></result>
+        </action>
+        <action name="Remove" method="deleteItem" class="action.ItemAction">
+            <result name="success">/Page/MyItem.jsp</result>
+            <result name="input"></result>
+        </action>
+        <action name="Detail" class="action.ItemAction" method="detail">
+            <result name="success">/Page/ItemInfo.jsp</result>
+            <result name="input">/Page/MyItem.jsp</result>
+        </action>
+        <action name="Search" method="searchItem" class="action.ItemAction">
+            <result name="success">/Page/SearchResult.jsp</result>
+            <result name="input">/Page/UserFace.jsp</result>
+        </action>
+    </package>
+
+    <package name="deal" namespace="/Deal" extends="struts-default">
+        <action name="Record" method="ShowRecord" class="action.DealRecordAction">
+            <result name="success">/Page/DealList.jsp</result>
+            <result name="input"></result>
+        </action>
+        <action name="Buy" method="deal" class="action.ItemAction">
+            <result name="success">MyItem</result>
+            <result name="input">/Page/ItemInfo.jsp</result>
+        </action>
+    </package>
+
+    <package name="comment" namespace="/Comment" extends="struts-default">
+        <action name="Add" method="addComment" class="action.CommentAction">
+            <result name="success" type="redirect">
+                ItemInfo?item.itemId=${#session.item.itemId}
+            </result>
+            <result name="input"></result>
+        </action>
+        <action name="Delete" method="deleteComment" class="action.CommentAction">
+            <result name="success" type="redirect">
+                ItemInfo?item.itemId=${#session.item.itemId}
+            </result>
+            <result name="input"></result>
+        </action>
+    </package>
+
 
     <include file="struts-default.xml"/>
 </struts>

@@ -27,7 +27,7 @@
     <br>
 
 
-    <form action="SearchItem" method="post">
+    <form action="Item/Search" method="post">
         <div class="input-group col-md-7 container">
             <input type="text" name="key" class="form-control"
                    placeholder="输入你喜欢的东西"> <span class="input-group-btn">

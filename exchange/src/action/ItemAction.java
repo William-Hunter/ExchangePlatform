@@ -1,5 +1,6 @@
 package action;
 
+import bean.Comment;
 import bean.DealRecord;
 import bean.Item;
 import bean.User;
@@ -163,7 +164,7 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String submitItem() throws IllegalAccessException, SQLException, NoSuchFieldException {
+    public String edit() throws IllegalAccessException, SQLException, NoSuchFieldException {
         User user = (User) ActionContext.getContext().getSession().get("user");
         item.setOwner(String.valueOf(user.getIds()));                           // 设置物品所有者
         if(null!=pictureUpload){
@@ -195,33 +196,37 @@ public class ItemAction extends ActionSupport {
         }
     }
 
-    public String itemInfo() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
-        Map session = ActionContext.getContext().getSession();
+    public String detail() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+        HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
         if (AppListener.access.select(item)) {
-            session.put("item", item);
-            List<Item> commentlist = AppListener.access.selectAll(item, "CommentId=" + item.getIds());
+            request.setAttribute("item", item);
+            List<Comment> commentlist = AppListener.access.selectAll(new Comment(), "aim=" + item.getIds());
             if (commentlist != null) {
-                session.put("commentlist", commentlist);
-                ActionContext.getContext().setSession(session);
+                request.setAttribute("commentlist", commentlist);
             }
+            List<User> owners = AppListener.access.selectAll(new User(), "ids=" + item.getOwner());
+            if (owners.size()==1){
+                request.setAttribute("owner", owners.get(0));
+            }
+
             return SUCCESS;
         } else {
             return INPUT;
         }
     }
 
-    public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
-        Map        session  = ActionContext.getContext().getSession();
-        HttpServletRequest request = (HttpServletRequest)  ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-        User       user     = (User) session.get("user");
-        List<Item> itemlist = AppListener.access.selectAll(new Item(), "owner=" + user.getIds());
-        if (itemlist != null) {
-            request.setAttribute("itemlist", itemlist);
-            return SUCCESS;
-        }
-        logger.debug("没有查到数据");
-        return INPUT;
-    }
+//    public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+//        Map        session  = ActionContext.getContext().getSession();
+//        HttpServletRequest request = (HttpServletRequest)  ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+//        User       user     = (User) session.get("user");
+//        List<Item> itemlist = AppListener.access.selectAll(new Item(), "owner=" + user.getIds());
+//        if (itemlist != null) {
+//            request.setAttribute("itemlist", itemlist);
+//            return SUCCESS;
+//        }
+//        logger.debug("没有查到数据");
+//        return INPUT;
+//    }
 
     public String deleteItem() throws NoSuchFieldException, IllegalAccessException, SQLException {
         String rootPath  = ServletActionContext.getServletContext().getRealPath("/Picture/Item/");

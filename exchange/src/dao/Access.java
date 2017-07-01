@@ -104,12 +104,12 @@ public class Access {
         this.sql.append(") ");
         value.append(")");
         this.sql.append(value + ";");
-        System.out.println(sql);
+        logger.info("insert:"+sql);
 
         preparedstatement = conntect.prepareStatement(this.sql.toString(), Statement.RETURN_GENERATED_KEYS);//创造有返回主键的预编译语句
 
         for (int index = 0; index < fields.length; index++) {                                              //为？赋值
-            logger.debug(fields[index].getName() + ":" + fields[index].get(instanse));                     //字段值打印
+            logger.debug(index + 1 +"\t"+fields[index].getName() + ":" + fields[index].get(instanse));                     //字段值打印
             preparedstatement.setObject(index + 1, fields[index].get(instanse));                           //设置参数
         }
 
@@ -138,9 +138,10 @@ public class Access {
         this.sql = new StringBuilder("DELETE FROM ");                               //组织delete语句
         this._class = instanse.getClass();
         this.sql.append(this._class.getSimpleName().toLowerCase() + " WHERE ids=?;");
+        logger.info("delete:"+sql.toString());
         preparedstatement = conntect.prepareStatement(this.sql.toString());
         preparedstatement.setObject(1, _class.getDeclaredField("ids").get(instanse));//从父类获取ids，然后设置到jdbc的参数
-
+        logger.debug("1\tids:" +_class.getDeclaredField("ids").get(instanse));                     //字段值打印
         try {
             if (1 == preparedstatement.executeUpdate()) {                       //执行sql
                 conntect.commit();
@@ -168,25 +169,32 @@ public class Access {
         sql.append(_class.getSimpleName().toLowerCase() + " SET ");
         Field[] fields = _class.getDeclaredFields();
 
+
         for (int index = 0; index < fields.length; index++) {
-            sql.append(fields[index].getName() + "=?");
-            if (index < fields.length - 1) {
-                sql.append(",");
+            if (fields[index].get(instanse)==null||fields[index].getName().equals("ids")){//跳过为空的属性和ids
+                continue;
             }
+            sql.append(fields[index].getName() + "=?,");
+        }
+        if(sql.toString().endsWith(",")){
+            sql.deleteCharAt(sql.length()-1);
         }
         sql.append(" WHERE ids=?;");
-        logger.info(sql.toString());
+        logger.info("update"+sql.toString());
 
         preparedstatement = conntect.prepareStatement(sql.toString());                  //编译sql语句
 
-        for (int index = 0; index < fields.length; index++) {
-            preparedstatement.setObject(index + 1, fields[index].get(instanse));                             //设置参数的值
-            logger.info(index + 1 + "=" + fields[index].get(instanse) + "\t");
+        int math=1;
+        for (int index = 0; index < fields.length; index++,math++) {
+            if (fields[index].get(instanse)==null||fields[index].getName().equals("ids")){      //跳过为空的属性和ids
+                math--;
+                continue;
+            }
+            preparedstatement.setObject(math, fields[index].get(instanse));                             //设置参数的值
+            logger.info(math+ "\t"+fields[index].getName()+":" + fields[index].get(instanse) + "\t");
         }
-        preparedstatement.setObject(fields.length + 1, _class.getDeclaredField("ids").get(instanse));//设置参数ids的值
-        logger.info(fields.length + 1 + "=" + _class.getDeclaredField("ids").get(instanse));
-//        preparedstatement.setObject(fields.length + 1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//设置参数ids的值
-//        logger.info(fields.length + 1 + "=" + _class.getSuperclass().getDeclaredField("ids").get(instanse));
+        preparedstatement.setObject(math, _class.getDeclaredField("ids").get(instanse));//设置参数ids的值
+        logger.info(math+ "\tids:" + _class.getDeclaredField("ids").get(instanse));
 
         try {
             if (1 == preparedstatement.executeUpdate()) {                               //执行sql
@@ -234,14 +242,14 @@ public class Access {
             }
         }
         sql.append(";");
-        logger.info("SQL:" + sql);
+        logger.info("select:" + sql);
         preparedstatement = conntect.prepareStatement(sql.toString());                //编译sql语句
         int i = 0;                                                                    //计算有效的个数
         for (int index = 0; index < fields.length; index++) {
             if (fields[index].get(instanse) == null) {                                  //如果当前字段为空，就跳过
                 continue;
             } else {
-                logger.info(i + 1 + ":" + fields[index].get(instanse) + "\t");
+                logger.info(i + 1 +"\t"+fields[index].getName()+ ":" + fields[index].get(instanse) + "\t");
                 preparedstatement.setObject(i + 1, fields[index].get(instanse));    //把对象的当前字段加入到jdbc的参数中去，
                 i++;
             }
@@ -274,6 +282,9 @@ public class Access {
         keepConnection();
         _class = table.getClass();
         sql = new StringBuilder("SELECT * FROM " + _class.getSimpleName().toLowerCase() + " WHERE " + condition + ";");//组织sql语句
+
+        logger.info("selectAll:"+sql.toString());
+
         preparedstatement = conntect.prepareStatement(sql.toString());                      //编译sql语句
 
         fields = _class.getDeclaredFields();                                    //获取公有的
@@ -306,7 +317,7 @@ public class Access {
         keepConnection();
         // UPDATE table SET a=1,b=2,c=3 WHERE mark=0001;
         sql = new StringBuilder("UPDATE " + table.getClass().getSimpleName().toLowerCase() + " SET " + content + " WHERE " + condition + ";");//组织sql语句
-        logger.debug(sql.toString());
+        logger.info("updateALL:"+sql.toString());
         try {
             preparedstatement = conntect.prepareStatement(sql.toString());      //编译sql
             if (preparedstatement.executeUpdate() > 0) {                        //执行sql，并且判断执行是否成功

@@ -31,7 +31,7 @@
 		<s:iterator value="#session.resultlist" id="item">
 			<div class="col-md-4">
 				<div class="col-md-12 item-back">
-					<a href="ItemInfo?item.itemId=<s:property value="#item.itemId"/>">
+					<a href="ItemInfo?item.ids=<s:property value="#item.ids"/>">
 						<img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#item.pictureLink"/>"
 						alt="itemPicture">
 					</a>

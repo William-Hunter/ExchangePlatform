@@ -4,10 +4,12 @@ import bean.User;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
+import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.PropertiesUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,7 +63,6 @@ public class UserAction extends ActionSupport {
         user.setJoinTime(sdf.format(new Date().getTime()));
         if (user.getPassword().equals(repassword)) {
             user.setAuthorize("guest");
-            user.setStatu(false);
             if (AppListener.access.selectAll(user, "email='" + user.getEmail() + "'").size() < 1) {
                 if (AppListener.access.insert(user)) {
                     logger.debug("Create account success");
@@ -77,7 +78,6 @@ public class UserAction extends ActionSupport {
     public String login() throws SQLException, IllegalAccessException, NoSuchFieldException {
         if (AppListener.access.select(user)) {
             logger.debug("已查到用户，正在登录");
-            user.setStatu(true);
             if (AppListener.access.update(user)) {
                 logger.debug("登录成功，正在跳转。。。");
                 Map session = ActionContext.getContext().getSession();
@@ -95,10 +95,8 @@ public class UserAction extends ActionSupport {
     public String logout() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
-        user.setStatu(false);
         if (AppListener.access.update(user)) {
             session.remove("user");
-            session.put("user", user);
             ActionContext.getContext().setSession(session);
             logger.debug("account logout success");
             return SUCCESS;
@@ -113,7 +111,6 @@ public class UserAction extends ActionSupport {
         user = (User) session.get("user");
         if (AppListener.access.delete(user)) {
             session.remove("user");
-            user.setStatu(false);
             session.put("user", user);
             ActionContext.getContext().setSession(session);
             logger.debug("account logoff success");
@@ -154,10 +151,9 @@ public class UserAction extends ActionSupport {
     }
 
     public String checkUser() throws SQLException, IllegalAccessException, NoSuchFieldException {
+        HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
         if (AppListener.access.select(user)) {
-            Map session = ActionContext.getContext().getSession();
-            session.put("checkuser", user);
-            ActionContext.getContext().setSession(session);
+            request.setAttribute("checkuser", user);
             return SUCCESS;
         } else {
             return NONE;

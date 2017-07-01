@@ -33,11 +33,6 @@ public class AppListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		try {
-			access.updateAll(new User(),"statu=false","1=1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		if(access.close()){
 			logger.debug("DB Access close finish");
 		}else{

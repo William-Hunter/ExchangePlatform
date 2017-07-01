@@ -1,8 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" import="java.util.*,bean.Item"%>
+<%@ page import="bean.User" %>
+<%@ page import="listener.AppListener" %>
 <%@taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
+<%
+	User user     = (User) session.getAttribute("user");
+	List<Item> itemlist = AppListener.access.selectAll(new Item(), "owner=" + user.getIds());
+	request.setAttribute("itemlist",itemlist);
+%>
 <html>
 <head>
 	<title>我的物品</title>
@@ -23,7 +29,7 @@
 
 		<div class="col-md-3">
 			<div class="col-md-12 item-back">
-				<a href="${pageContext.request.contextPath}/EditItemInit">
+				<a href="${pageContext.request.contextPath}/Item/EditInit">
 					<img src="${pageContext.request.contextPath}/Picture/Item/more.jpg" alt="addmore"></a>
 
 			</div>
@@ -33,16 +39,14 @@
 
 			<div class="col-md-3">
 				<div class="row col-md-12 item-back">
-					<a
-						href="ItemInfo?item.itemId=<s:property value="#item.itemId" />
-					">
+					<a href="${pageContext.request.contextPath}/Item/Detail?item.ids=<s:property value="#item.ids" />">
 					<img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#item.pictureLink" />" alt="itemPicture">
 				</a>
 				<div class="row">
-					<a href="EditItemInit?item.ids=<s:property value="#item.ids"/>" class="col-md-6 edit">
+					<a href="${pageContext.request.contextPath}/Item/EditInit?item.ids=<s:property value="#item.ids"/>" class="col-md-6 edit">
 						编辑
 					</a>
-					<a href="RemoveItem?item.ids=<s:property value="#item.ids"/>
+					<a href="${pageContext.request.contextPath}/Item/Remove?item.ids=<s:property value="#item.ids"/>
 					" class="col-md-6">删除
 				</a>
 			</div>

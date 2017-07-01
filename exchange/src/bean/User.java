@@ -14,7 +14,6 @@ public class User {
 	}
 	public String email;
 	public String password;
-	public Boolean statu;
 	public String authorize;
 	public String joinTime;
 	public String name;
@@ -59,11 +58,4 @@ public class User {
 		this.name = name;
 	}
 
-	public Boolean getStatu() {
-		return statu;
-	}
-
-	public void setStatu(Boolean statu) {
-		this.statu = statu;
-	}
 }

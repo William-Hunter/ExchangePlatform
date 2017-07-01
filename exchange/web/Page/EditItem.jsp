@@ -19,7 +19,8 @@
     <br> <br> <br> <br>
     <h3>编辑物品</h3>
     <br> <br>
-    <form action="SubmitItem" method="post">
+    <form action="${pageContext.request.contextPath}/Item/Edit" method="post" enctype="multipart/form-data">
+        <%--此处要设置表单的图片的上传格式--%>
         <div class="col-lg-6 col-md-6 col-sm-8 col-center-block">
             <input type="hidden" name="item.ids"
                    <c:if test="${not empty item}">value="<s:property value="#request.item.ids"/>"</c:if>>
@@ -44,10 +45,10 @@
             </div>
             <div class="form-group">
                 <c:if test="${not empty item}">
-                    <img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#item.pictureLink" />" alt="itemPicture">
+                    <img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#request.item.pictureLink" />" alt="itemPicture">
                 </c:if>
-                <label for="exampleInputFile">上传图片</label>
-                <input type="file" name="item.pictureLink" id="exampleInputFile">
+                <label for="InputFile">上传图片</label>
+                <input type="file" id="InputFile" name="pictureUpload">
             </div>
             <button type="submit" class="btn btn-default col-center-block col-md-3">提交</button>
         </div>

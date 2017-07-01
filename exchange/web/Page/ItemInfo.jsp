@@ -26,42 +26,41 @@
                 <div class="row">
                     <p>
                         物品名：
-                        <s:property value="#session.item.itemName"/>
+                        <s:property value="#request.item.itemName"/>
                     </p>
                 </div>
                 <div class="row">
                     <p>
-                        拥有者： <a
-                            href="${pageContext.request.contextPath}/CheckUser?checkUser.email=
-								<s:property value="#session.item.owner"/>">
-                        <s:property value="#session.item.owner"/>
+                        拥有者： <a href="${pageContext.request.contextPath}/CheckUser?user.ids=
+								<s:property value="#request.owner.ids"/>">
+                        <s:property value="#request.owner.name"/>
                     </a>
                     </p>
                 </div>
                 <div class="row">
                     <p>
                         物品介绍：
-                        <s:property value="#session.item.description"/>
+                        <s:property value="#request.item.description"/>
                     </p>
                 </div>
                 <div class="row">
                     <p>
                         价格：
-                        <s:property value="#session.item.buyPrice"/>
+                        <s:property value="#request.item.buyPrice"/>
                     </p>
                 </div>
 
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6">
-                <img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#session.item.pictureLink" />" alt="" class="col-md-12 col-sm-12 col-xs-12">
+                <img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#request.item.pictureLink" />" alt="" class="col-md-12 col-sm-12 col-xs-12">
             </div>
         </div>
         <br>
         <div class="row">
 
-            <form action="AddComment?comment.sender=<s:property value="#session.user.email"/>
-				&comment.receiver=<s:property value="#session.item.owner"/>
-				&comment.aim=<s:property value="#session.item.itemId"/>" method="post">
+            <form action="${pageContext.request.contextPath}/Comment/Add?comment.sender=<s:property value="#session.user.email"/>
+				&comment.receiver=<s:property value="#request.item.owner"/>
+				&comment.aim=<s:property value="#request.item.ids"/>" method="post">
 					<textarea name="comment.context" class="form-control" rows="3"
                               placeholder="在此处输入您的评论"></textarea>
                 <br>
@@ -75,7 +74,7 @@
             </form>
             <div class="col-md-3"></div>
             <form
-                    action="Deal?item.itemId=<s:property value="#session.item.itemId"/>
+                    action="Deal?item.ids=<s:property value="#request.item.ids"/>
 				&newOwner=
 				<s:property value="#session.user.email"/>
 				"
@@ -90,7 +89,7 @@
         </div>
 
         <br> <br>
-        <s:iterator value="#session.commentlist" var="comment">
+        <s:iterator value="#request.commentlist" var="comment">
             <div class="row">
                 <div class="col-md-11 col-sm-11 col-center-block">
                     <div class="row btn-default">

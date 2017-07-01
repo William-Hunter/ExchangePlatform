@@ -23,11 +23,11 @@
         <div id="navbar-collapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
 
-                <li><a href="${pageContext.request.contextPath}/MyItem">
+                <li><a href="${pageContext.request.contextPath}/Page/MyItem.jsp">
                     <p>我的物品</p>
                 </a></li>
 
-                <li><a href="${pageContext.request.contextPath}/BuyRecord">
+                <li><a href="${pageContext.request.contextPath}/Deal/Record">
                     <p>购买记录</p>
                 </a></li>
                 <li><a href="${pageContext.request.contextPath}/Page/ChangePassword.jsp">

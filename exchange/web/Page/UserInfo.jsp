@@ -32,18 +32,18 @@
 		<div class="col-md-8 col-sm-8 col-center-block text-center">
 
 			<div class="row">
-				<p>昵称：<s:property value="#session.checkuser.name"/></p>
+				<p>昵称：<s:property value="#request.checkuser.name"/></p>
 			</div>
 			<br>
 			<div class="row">
-				<p>加入时间：<s:property value="#session.checkuser.joinTime"/></p>
+				<p>加入时间：<s:property value="#request.checkuser.joinTime"/></p>
 			</div>
 			<br>
 			<div class="row">
-				<p>email：<s:property value="#session.checkuser.email"/></p>
+				<p>email：<s:property value="#request.checkuser.email"/></p>
 			</div>
 			<div class="row">
-                                <p>在线状态：<s:property value="#session.checkuser.onLine"/></p>
+
                         </div>
 
 		</div>
