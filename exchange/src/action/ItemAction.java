@@ -9,18 +9,24 @@ import listener.AppListener;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.FileUtils;
+import utils.PropertiesUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Administrator on 2016/12/3.
  */
 public class ItemAction extends ActionSupport {
     static Logger logger = LoggerFactory.getLogger(ItemAction.class);
-    private Item item;
-    private File pictureUpload;
+    private Item   item;
+    private File   pictureUpload;
     private String pictureUploadContentType;
     private String pictureUploadFileName;
     private String newOwner;
@@ -74,63 +80,8 @@ public class ItemAction extends ActionSupport {
         this.pictureUploadFileName = pictureUploadFileName;
     }
 
-    public String addItem() throws IllegalAccessException, SQLException, NoSuchFieldException {
-        User user = (User) ActionContext.getContext().getSession().get("user");
-        // 设置图片所属者
-        item.setOwner(String.valueOf(user.getIds()));                           // 设置物品所有者
 
-        String[] pictureName = this.getPictureUploadFileName().split("\\.");            // 上传图片并且设置图片链接
-        String suffix = pictureName[pictureName.length - 1];
 
-        String imgFolder = AppListener.pictureFolder+"/Item/"+ user.getIds();
-
-        String imgname=item.getItemName()+"."+suffix;
-
-        if (fileUpload(imgFolder, imgname)) {                                          //文件上载
-            item.setPictureLink(imgFolder+"/"+imgname);             // 设置图片路径并且上传图片
-            logger.debug("file upload success");
-        } else {
-            logger.debug("file upload fail");
-            return INPUT;
-        }
-        if (AppListener.access.insert(item)) {                      // 添加物品
-            logger.debug("add item success");
-            return SUCCESS;
-        } else {
-            logger.debug("add item fail");
-            return INPUT;
-        }
-    }
-
-    boolean fileUpload(String imgFolder, String imgname) {
-        InputStream is;
-        OutputStream os;
-        try {
-            is = new FileInputStream(pictureUpload);
-            File folder = new File(imgFolder);
-            if (!folder.exists() && !folder.isDirectory()) {
-                if(folder.mkdirs()){
-                    logger.debug("Create Direction("+imgFolder+") finish");
-                }else{
-                    logger.debug("Create Direction("+imgFolder+") fail");
-                }
-            }
-            File toFile = new File(imgFolder, imgname);
-            os = new FileOutputStream(toFile);
-            byte[] buffer = new byte[1024];
-            for (int length = 0; (length = is.read(buffer)) > 0; ) {
-                os.write(buffer, 0, length);
-            }
-            is.close();
-            os.close();
-            logger.debug("file write finish");
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-    }
 
     public String deal() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
@@ -165,8 +116,10 @@ public class ItemAction extends ActionSupport {
         return SUCCESS;
     }
 
+
+    //TODO 图片需要移动吗？把拥有者改变一下就好了
     boolean moveFile(String oldPath, String newFolderPath, String newFilePath) {
-        File oldFile = new File(oldPath);
+        File oldFile   = new File(oldPath);
         File newFolder = new File(newFolderPath);
         if (!newFolder.exists()) {
             newFolder.mkdirs();
@@ -197,47 +150,73 @@ public class ItemAction extends ActionSupport {
     }
 
     public String editInit() throws SQLException, IllegalAccessException, NoSuchFieldException {
-        Map session = ActionContext.getContext().getSession();
-        if(AppListener.access.select(item)){
-            session.put("item", item);
-            ActionContext.getContext().setSession(session);
+        HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+        if (null == item) {
             return SUCCESS;
-        }else{
-            return INPUT;
+        } else {
+            if (AppListener.access.select(item)) {
+                request.setAttribute("item", item);
+                return SUCCESS;
+            } else {
+                return INPUT;
+            }
         }
     }
 
-    public String submitChange() throws SQLException, IllegalAccessException, NoSuchFieldException {
-        if(AppListener.access.update(item)){
-            logger.info("物品信息修改成功");
-            return SUCCESS;
+    public String submitItem() throws IllegalAccessException, SQLException, NoSuchFieldException {
+        User user = (User) ActionContext.getContext().getSession().get("user");
+        item.setOwner(String.valueOf(user.getIds()));                           // 设置物品所有者
+        if(null!=pictureUpload){
+            String[] names   = pictureUploadFileName.split("\\.");
+            String   picname = FileUtils.itemImgUpload(pictureUpload, names[names.length - 1]);
+            if (null != picname) {                                          //文件上载
+                item.setPictureLink(picname);                    // 设置图片路径
+                logger.debug("file upload success");
+            } else {
+                logger.debug("file upload fail");
+            }
+        }
+        if(item.getIds()!=null){
+            if (AppListener.access.update(item)) {                      // 添加物品
+                logger.debug("update item success");
+                return SUCCESS;
+            } else {
+                logger.debug("update item fail");
+                return INPUT;
+            }
         }else{
-            return NONE;
+            if (AppListener.access.insert(item)) {                      // 添加物品
+                logger.debug("add item success");
+                return SUCCESS;
+            } else {
+                logger.debug("add item fail");
+                return INPUT;
+            }
         }
     }
 
     public String itemInfo() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
-        if(AppListener.access.select(item)){
+        if (AppListener.access.select(item)) {
             session.put("item", item);
-            List<Item> commentlist=AppListener.access.selectAll(item,"CommentId="+item.getIds());
-            if(commentlist!=null){
+            List<Item> commentlist = AppListener.access.selectAll(item, "CommentId=" + item.getIds());
+            if (commentlist != null) {
                 session.put("commentlist", commentlist);
                 ActionContext.getContext().setSession(session);
             }
             return SUCCESS;
-        }else{
+        } else {
             return INPUT;
         }
     }
 
     public String myItem() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
-        Map session = ActionContext.getContext().getSession();
-        User user = (User) session.get("user");
-        List<Item> itemlist=AppListener.access.selectAll(new Item(),"owner="+user.getIds());
-        if(itemlist!=null) {
-            session.put("itemlist", itemlist);
-            ActionContext.getContext().setSession(session);
+        Map        session  = ActionContext.getContext().getSession();
+        HttpServletRequest request = (HttpServletRequest)  ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+        User       user     = (User) session.get("user");
+        List<Item> itemlist = AppListener.access.selectAll(new Item(), "owner=" + user.getIds());
+        if (itemlist != null) {
+            request.setAttribute("itemlist", itemlist);
             return SUCCESS;
         }
         logger.debug("没有查到数据");
@@ -245,11 +224,10 @@ public class ItemAction extends ActionSupport {
     }
 
     public String deleteItem() throws NoSuchFieldException, IllegalAccessException, SQLException {
-        String rootPath=ServletActionContext.getServletContext().getRealPath("/Picture/Item/");
-        File deleteImg=new File(rootPath+item.getOwner()+"/"+item.getPictureLink());
-
-        if(AppListener.access.delete(item)){
-            if(deleteImg.delete()){
+        String rootPath  = ServletActionContext.getServletContext().getRealPath("/Picture/Item/");
+        File   deleteImg = new File(rootPath + item.getOwner() + "/" + item.getPictureLink());
+        if (AppListener.access.delete(item)) {
+            if (deleteImg.delete()) {
                 logger.debug("remove item success");
                 return SUCCESS;
             }
@@ -259,19 +237,16 @@ public class ItemAction extends ActionSupport {
     }
 
     public String searchItem() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        List<Item> resultList=AppListener.access.selectAll(item,"itemName='"+key+"'");
-        if(resultList!=null){
+        List<Item> resultList = AppListener.access.selectAll(item, "itemName='" + key + "'");
+        if (resultList != null) {
             Map session = ActionContext.getContext().getSession();
             session.put("resultlist", resultList);
             ActionContext.getContext().setSession(session);
             return SUCCESS;
-        }else{
+        } else {
             return INPUT;
         }
     }
-
-
-
 
 
 }

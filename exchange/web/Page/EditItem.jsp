@@ -1,98 +1,58 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@taglib prefix="s" uri="/struts-tags"%>
-
+         pageEncoding="UTF-8" %>
+<%@taglib prefix="s" uri="/struts-tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%
-	String path = request.getContextPath();
-%>
-
 <html>
 <head>
-<title>添加物品</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="<%=path%>/CSS/bootstrap.css" rel="stylesheet">
-<script src="<%=path%>/JS/jquery.js"></script>
-<script src="<%=path%>/JS/bootstrap.js"></script>
+    <title>添加物品</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <s:include value="link.jsp"/>
 </head>
 
 <body>
+<s:include value="nav.jsp"/>
 
-	<nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-                <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed"
-                                data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"
-                                aria-controls="navbar">
-                                <span class="sr-only">Toggle navigation</span> <span
-                                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                                        class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="<%=path%>/Page/UserFace.jsp"> <img
-								src="E:\workspace\ExchangePlatform\Picture\Logo.jpg" alt="logo fail"></a>
-                </div>
-                <div id="navbar-collapse" class="collapse navbar-collapse">
-                        <ul class="nav navbar-nav navbar-right">
+<div class="row container">
+    <br> <br> <br> <br>
+    <h3>编辑物品</h3>
+    <br> <br>
+    <form action="SubmitItem" method="post">
+        <div class="col-lg-6 col-md-6 col-sm-8 col-center-block">
+            <input type="hidden" name="item.ids"
+                   <c:if test="${not empty item}">value="<s:property value="#request.item.ids"/>"</c:if>>
 
-                                <li><a href="<%=path%>/MyItem">
-                                                <p>我的物品</p>
-                                </a></li>
-
-                                <li><a href="<%=path%>/BuyRecord">
-                                                <p>购买记录</p>
-                                </a></li>
-                                <li><a href="<%=path%>/Page/ChangePassword.jsp">
-                                                <p>修改密码</p>
-                                </a></li>
-                                <li><a href="<%=path%>/Logout">
-                                                <p>退出登录</p>
-                                </a></li>
-                        </ul>
-                </div>
-                <!--/.nav-collapse -->
+            <div class="form-group">
+                <label for="itemName">物品名</label>
+                <input id="itemName" type="text" name="item.itemName" class="form-control"
+                       <c:if test="${not empty item}">value="<s:property value="#request.item.itemName"/>"</c:if>
+                       placeholder="请输入物品名">
+            </div>
+            <div class="form-group">
+                <label for="buyPrice">购买时价格</label>
+                <input id="buyPrice" type="text" name="item.buyPrice" class="form-control"
+                       <c:if test="${not empty item}">value="<s:property value="#request.item.buyPrice"/>"</c:if>
+                       placeholder="请输入购买时的价格">
+            </div>
+            <div class="form-group">
+                <label for="description">物品介绍</label>
+                <input id="description" type="text" name="item.description" class="form-control"
+                       <c:if test="${not empty item}">value="<s:property value="#request.item.description"/>"</c:if>
+                       placeholder="请输入物品介绍">
+            </div>
+            <div class="form-group">
+                <c:if test="${not empty item}">
+                    <img src="${pageContext.request.contextPath}/${sessionScope.img_api}?category=Item&name=<s:property value="#item.pictureLink" />" alt="itemPicture">
+                </c:if>
+                <label for="exampleInputFile">上传图片</label>
+                <input type="file" name="item.pictureLink" id="exampleInputFile">
+            </div>
+            <button type="submit" class="btn btn-default col-center-block col-md-3">提交</button>
         </div>
-        </nav>
-
-	<div class="row container">
-		<br> <br> <br> <br>
-		<h3>添加物品</h3>
-		<br> <br>
-		<form action="SubmitChange" method="post">
-			<div class="col-lg-6 col-md-6 col-sm-8 col-center-block">
-			             
-			             <input type="hidden" name="item.itemId"
-                                                value="<s:property value="#session.item.itemId"/>">
-				<div class="form-group">
-					<label for="exampleInputEmail1">物品名</label> <input type="text"
-						name="item.itemName" class="form-control"
-						value="<s:property value="#session.item.itemName"/>"
-						placeholder="请输入物品名">
-				</div>
-				<div class="form-group">
-					<label for="exampleInputPassword1">购买时价格</label> <input type="text"
-						name="item.buyPrice" class="form-control"
-						value="<s:property value="#session.item.buyPrice"/>"
-						placeholder="请输入购买时的价格">
-				</div>
-				<div class="form-group">
-					<label for="exampleInputPassword1">物品介绍</label> <input type="text"
-						name="item.description" class="form-control"
-						value="<s:property value="#session.item.description"/>"
-						placeholder="请输入物品介绍">
-				</div>
-				<div class="form-group">
-					<label for="exampleInputFile">上传图片</label> <input type="file"
-						name="item.pictureLink" id="exampleInputFile">
-
-				</div>
-
-				<button type="submit"
-					class="btn btn-default col-center-block col-md-3">添加物品</button>
-			</div>
-		</form>
-	</div>
+    </form>
+</div>
 
 </body>
 </html>

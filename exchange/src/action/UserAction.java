@@ -6,10 +6,13 @@ import com.opensymphony.xwork2.ActionSupport;
 import listener.AppListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.PropertiesUtil;
+
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Administrator on 2016/12/1.
@@ -17,7 +20,7 @@ import java.util.Map;
 public class UserAction extends ActionSupport {
     static Logger logger = LoggerFactory.getLogger(UserAction.class);
     private String repassword;
-    private User user;
+    private User   user;
     private String newpassword;
     private String oldpassword;
 
@@ -54,17 +57,17 @@ public class UserAction extends ActionSupport {
     }
 
     public String register() throws SQLException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException, InstantiationException {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         user.setJoinTime(sdf.format(new Date().getTime()));
         if (user.getPassword().equals(repassword)) {
             user.setAuthorize("guest");
             user.setStatu(false);
-            if (AppListener.access.selectAll(user,"email='"+user.getEmail()+"'").size()<1) {
+            if (AppListener.access.selectAll(user, "email='" + user.getEmail() + "'").size() < 1) {
                 if (AppListener.access.insert(user)) {
                     logger.debug("Create account success");
                     return SUCCESS;
                 }
-            }else{
+            } else {
                 logger.debug("user is exsit,Create account fail.");
             }
         }
@@ -72,17 +75,19 @@ public class UserAction extends ActionSupport {
     }
 
     public String login() throws SQLException, IllegalAccessException, NoSuchFieldException {
-        if(AppListener.access.select(user)){
+        if (AppListener.access.select(user)) {
             logger.debug("已查到用户，正在登录");
             user.setStatu(true);
-            if(AppListener.access.update(user)){
+            if (AppListener.access.update(user)) {
                 logger.debug("登录成功，正在跳转。。。");
                 Map session = ActionContext.getContext().getSession();
                 session.put("user", user);
+                session.put("img_api",PropertiesUtil.getInfoPropertyByName("img_api"));
                 ActionContext.getContext().setSession(session);
                 return SUCCESS;
             }
         }
+
         logger.debug("没有这个账户");
         return INPUT;
     }
@@ -123,9 +128,9 @@ public class UserAction extends ActionSupport {
         Map session = ActionContext.getContext().getSession();
         user = (User) session.get("user");
 
-        if(AppListener.access.select(user)){
+        if (AppListener.access.select(user)) {
             user.setPassword(newpassword);
-            if(AppListener.access.update(user)){
+            if (AppListener.access.update(user)) {
                 session.remove("user");
                 session.put("user", user);
                 ActionContext.getContext().setSession(session);
@@ -138,9 +143,9 @@ public class UserAction extends ActionSupport {
     }
 
     public String recoverPassword() throws SQLException, IllegalAccessException, NoSuchFieldException {
-        if(AppListener.access.select(user)){
+        if (AppListener.access.select(user)) {
             user.setPassword(newpassword);
-            if(AppListener.access.update(user)){
+            if (AppListener.access.update(user)) {
                 logger.debug("account password recover success!");
                 return SUCCESS;
             }

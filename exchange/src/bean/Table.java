@@ -1,16 +1,16 @@
 package bean;
 
 /**
- * Created by Administrator on 2016/11/29.
+ * Created by william on 2017/7/1.
  */
 public class Table {
-    public long ids;
+    public Integer ids;
 
-    public long getIds() {
+    public Integer getIds() {
         return ids;
     }
 
-    public void setIds(long ids) {
+    public void setIds(Integer ids) {
         this.ids = ids;
     }
 }

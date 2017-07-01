@@ -2,10 +2,19 @@ package bean;
 
 import java.sql.Date;
 
-public class User extends Table {
+public class User {
+	public Integer ids;
+
+	public Integer getIds() {
+		return ids;
+	}
+
+	public void setIds(Integer ids) {
+		this.ids = ids;
+	}
 	public String email;
 	public String password;
-	public boolean statu;
+	public Boolean statu;
 	public String authorize;
 	public String joinTime;
 	public String name;
@@ -50,11 +59,11 @@ public class User extends Table {
 		this.name = name;
 	}
 
-	public boolean isStatu() {
+	public Boolean getStatu() {
 		return statu;
 	}
 
-	public void setStatu(boolean statu) {
+	public void setStatu(Boolean statu) {
 		this.statu = statu;
 	}
 }

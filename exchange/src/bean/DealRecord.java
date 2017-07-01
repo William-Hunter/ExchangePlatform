@@ -1,9 +1,18 @@
 package bean;
 
-public class DealRecord extends Table{
+public class DealRecord {
+	public Integer ids;
+
+	public Integer getIds() {
+		return ids;
+	}
+
+	public void setIds(Integer ids) {
+		this.ids = ids;
+	}
 	public String sender;
 	public String receiver;
-	public long itemId;
+	public Long itemId;
 	public String itemName;
 
 	public String getSender() {
@@ -22,19 +31,20 @@ public class DealRecord extends Table{
 		this.receiver = receiver;
 	}
 
-	public long getItemId() {
-		return itemId;
-	}
-
-	public void setItemId(long itemId) {
-		this.itemId = itemId;
-	}
-
 	public String getItemName() {
 		return itemName;
 	}
 
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
+	}
+
+
+	public Long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(Long itemId) {
+		this.itemId = itemId;
 	}
 }

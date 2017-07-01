@@ -1,40 +1,50 @@
 package bean;
 
-public class Comment extends Table{
-	public String sender;
-	public String receiver;
-	public String context;
-	public long aim;
+public class Comment {
+  public Integer ids;
 
-	public String getSender() {
-		return sender;
-	}
+  public Integer getIds() {
+    return ids;
+  }
 
-	public void setSender(String sender) {
-		this.sender = sender;
-	}
+  public void setIds(Integer ids) {
+    this.ids = ids;
+  }
+  public String sender;
+  public String receiver;
+  public String context;
+  public Long aim;
 
-	public String getReceiver() {
-		return receiver;
-	}
+  public String getSender() {
+    return sender;
+  }
 
-	public void setReceiver(String receiver) {
-		this.receiver = receiver;
-	}
+  public void setSender(String sender) {
+    this.sender = sender;
+  }
 
-	public String getContext() {
-		return context;
-	}
+  public String getReceiver() {
+    return receiver;
+  }
 
-	public void setContext(String context) {
-		this.context = context;
-	}
+  public void setReceiver(String receiver) {
+    this.receiver = receiver;
+  }
 
-	public long getAim() {
-		return aim;
-	}
+  public String getContext() {
+    return context;
+  }
 
-	public void setAim(long aim) {
-		this.aim = aim;
-	}
+  public void setContext(String context) {
+    this.context = context;
+  }
+
+
+  public Long getAim() {
+    return aim;
+  }
+
+  public void setAim(Long aim) {
+    this.aim = aim;
+  }
 }

@@ -13,14 +13,12 @@ import dao.*;
 public class AppListener implements ServletContextListener {
 	static Logger logger = LoggerFactory.getLogger(AppListener.class);
 	public static Access access;
-	public static String pictureFolder;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 //		此时还没有ActionContent，怎么调用都是null
 //		Map session = ActionContext.getContext().getSession();
-//		pictureFolder="E:\\workspace\\ExchangePlatform\\Picture";
-//		session.put("pictureFolder", pictureFolder);
+
 
 		try {
 			access=new Access();

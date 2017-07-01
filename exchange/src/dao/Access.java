@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 
 public class Access {
     public Logger logger = LoggerFactory.getLogger(Access.class);
-    protected StringBuilder sql;
-    protected DataSource ds;
-    protected ResultSet resultset;
-    protected Connection conntect;
+    protected StringBuilder     sql;
+    protected DataSource        ds;
+    protected ResultSet         resultset;
+    protected Connection        conntect;
     protected PreparedStatement preparedstatement;
     protected ResultSetMetaData rsmd;
-    protected Class _class;
-    protected Field[] fields;
+    protected Class             _class;
+    protected Field[]           fields;
 
     protected void clear() {
         this._class = null;
@@ -29,7 +29,7 @@ public class Access {
         this.sql = null;
         this.resultset = null;
         this.preparedstatement = null;
-        this.ds=null;
+        this.ds = null;
     }
 
     public Access() throws SQLException {
@@ -70,15 +70,16 @@ public class Access {
             return false;
         }
     }
+
     public boolean keepConnection() throws SQLException {
-        try{
-            preparedstatement=conntect.prepareStatement("SELECT 1;");
+        try {
+            preparedstatement = conntect.prepareStatement("SELECT 1;");
             resultset = preparedstatement.executeQuery();
-        }catch (SQLException e){
-            conntect=ds.getConnection();
+        } catch (SQLException e) {
+            conntect = ds.getConnection();
             conntect.setAutoCommit(false);
             e.printStackTrace();
-        }finally {
+        } finally {
             return !conntect.isClosed();
         }
     }
@@ -117,7 +118,7 @@ public class Access {
                 conntect.commit();
                 resultset = preparedstatement.getGeneratedKeys();
                 if (resultset.next()) {
-                    this._class.getSuperclass().getDeclaredField("ids").set(instanse, resultset.getInt(1));//将主键值存储到对象之中，ids要从父类那里获取
+                    this._class.getDeclaredField("ids").set(instanse, resultset.getInt(1));//将自增的主键值存储到对象之中，
                     retu = true;
                 }
             }
@@ -138,7 +139,7 @@ public class Access {
         this._class = instanse.getClass();
         this.sql.append(this._class.getSimpleName().toLowerCase() + " WHERE ids=?;");
         preparedstatement = conntect.prepareStatement(this.sql.toString());
-        preparedstatement.setObject(1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//从父类获取ids，然后设置到jdbc的参数
+        preparedstatement.setObject(1, _class.getDeclaredField("ids").get(instanse));//从父类获取ids，然后设置到jdbc的参数
 
         try {
             if (1 == preparedstatement.executeUpdate()) {                       //执行sql
@@ -182,8 +183,10 @@ public class Access {
             preparedstatement.setObject(index + 1, fields[index].get(instanse));                             //设置参数的值
             logger.info(index + 1 + "=" + fields[index].get(instanse) + "\t");
         }
-        preparedstatement.setObject(fields.length + 1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//设置参数ids的值
-        logger.info(fields.length + 1 + "=" + _class.getSuperclass().getDeclaredField("ids").get(instanse));
+        preparedstatement.setObject(fields.length + 1, _class.getDeclaredField("ids").get(instanse));//设置参数ids的值
+        logger.info(fields.length + 1 + "=" + _class.getDeclaredField("ids").get(instanse));
+//        preparedstatement.setObject(fields.length + 1, _class.getSuperclass().getDeclaredField("ids").get(instanse));//设置参数ids的值
+//        logger.info(fields.length + 1 + "=" + _class.getSuperclass().getDeclaredField("ids").get(instanse));
 
         try {
             if (1 == preparedstatement.executeUpdate()) {                               //执行sql
@@ -252,7 +255,7 @@ public class Access {
                 for (int index = 0; index < fields.length; index++) {
                     fields[index].set(instanse, resultset.getObject(fields[index].getName()));
                 }
-                _class.getSuperclass().getDeclaredField("ids").set(instanse, resultset.getLong("ids"));//从结果集中获取ids属性存储到超类的ids
+//                _class.getSuperclass().getDeclaredField("ids").set(instanse, resultset.getLong("ids"));//从结果集中获取ids属性存储到超类的ids
                 retu = true;
             }
         } catch (SQLException | NullPointerException e) {
@@ -288,7 +291,7 @@ public class Access {
             for (int index = 0; index < fields.length; index++) {
                 fields[index].set(point, resultset.getObject(fields[index].getName())); //获取列值存储到字段
             }
-            _class.getSuperclass().getDeclaredField("ids").set(point, resultset.getObject("ids"));//获取ids字段的值存储到父类的ids属性
+//            _class.getSuperclass().getDeclaredField("ids").set(point, resultset.getObject("ids"));//获取ids字段的值存储到父类的ids属性
             list.add(point);
         }
         this.clear();

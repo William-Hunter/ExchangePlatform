@@ -1,9 +1,18 @@
 package bean;
 
-public class Item extends Table {
+public class Item {
+	public Integer ids;
+
+	public Integer getIds() {
+		return ids;
+	}
+
+	public void setIds(Integer ids) {
+		this.ids = ids;
+	}
 	public String itemName;
 	public String owner;
-	public long buyPrice;
+	public String buyPrice;
 	public String description;
 	public String pictureLink;
 
@@ -23,14 +32,6 @@ public class Item extends Table {
 		this.owner = owner;
 	}
 
-	public Long getBuyPrice() {
-		return buyPrice;
-	}
-
-	public void setBuyPrice(long buyPrice) {
-		this.buyPrice = buyPrice;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -47,4 +48,11 @@ public class Item extends Table {
 		this.pictureLink = pictureLink;
 	}
 
+	public String getBuyPrice() {
+		return buyPrice;
+	}
+
+	public void setBuyPrice(String buyPrice) {
+		this.buyPrice = buyPrice;
+	}
 }

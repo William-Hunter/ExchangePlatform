@@ -48,10 +48,8 @@
             <result name="success">/Page/ItemInfo.jsp</result>
             <result name="input"></result>
         </action>
-        <action name="AddItem" method="addItem" class="action.ItemAction">
-            <result name="success" type="chain">MyItem</result>
-            <result name="input">/Page/AddItem.jsp</result>
-        </action>
+
+
         <action name="RemoveItem" method="deleteItem" class="action.ItemAction">
             <result name="success" type="chain">MyItem</result>
             <result name="input">/Page/MyItem.jsp</result>
@@ -89,16 +87,18 @@
             <result name="input"></result>
         </action>
 
-
-        <action name="EditItem" method="editInit" class="action.ItemAction">
+        <action name="EditItemInit" class="action.ItemAction" method="editInit">
             <result name="success">/Page/EditItem.jsp</result>
             <result name="input"></result>
         </action>
 
-        <action name="SubmitChange" method="submitChange" class="action.ItemAction">
+        <action name="SubmitItem" class="action.ItemAction" method="submitItem">
             <result name="success" type="chain">MyItem</result>
             <result name="input"></result>
         </action>
+
+        <action name="ImageAPI" method="get" class="action.ImageStream"/>
+
 
 
     </package>

@@ -2,16 +2,14 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%String path = request.getContextPath();%> 
+
 <html>
 <head>
 <title>重置密码</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="<%=path %>/CSS/bootstrap.css" rel="stylesheet">
-<script src="<%=path %>/JS/jquery.js"></script>
-    <script src="<%=path %>/JS/bootstrap.js"></script>
+	<s:include value="link.jsp"/>
 </head>
 
 <body>
