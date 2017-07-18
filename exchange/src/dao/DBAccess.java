@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class Access {
-    public Logger logger = LoggerFactory.getLogger(Access.class);
+public class DBAccess {
+    public Logger logger = LoggerFactory.getLogger(DBAccess.class);
     protected StringBuilder     sql;
     protected DataSource        ds;
     protected ResultSet         resultset;
@@ -32,7 +32,7 @@ public class Access {
         this.ds = null;
     }
 
-    public Access() throws SQLException {
+    public DBAccess() throws SQLException {
         try {
             Context context = new InitialContext();
             context = (Context) context.lookup("java:/comp/env");
@@ -71,6 +71,11 @@ public class Access {
         }
     }
 
+    /**
+     * 发送一个测试连接，确保连接可用
+     * @return
+     * @throws SQLException
+     */
     public boolean keepConnection() throws SQLException {
         try {
             preparedstatement = conntect.prepareStatement("SELECT 1;");
@@ -84,8 +89,8 @@ public class Access {
         }
     }
 
+
     public <T> boolean insert(T instanse) throws IllegalAccessException, SQLException, NoSuchFieldException {
-        keepConnection();
         boolean retu = false;
         this.sql = new StringBuilder("INSERT INTO ");                              //组织sql insert语句
         this._class = instanse.getClass();
@@ -132,7 +137,6 @@ public class Access {
     }
 
     public <T> boolean delete(T instanse) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        keepConnection();
         boolean retu = false;
 
         this.sql = new StringBuilder("DELETE FROM ");                               //组织delete语句
@@ -161,7 +165,6 @@ public class Access {
      * 修改的时候，条件为ids，获取所有的属性，然后赋值，不需要考虑属性为空的情况，毕竟有时候，操作的时候会把属性置成空的。
      */
     public <T> boolean update(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
-        keepConnection();
         boolean retu = false;
 
         sql = new StringBuilder("UPDATE ");                             //组织sql update语句
@@ -215,7 +218,6 @@ public class Access {
      * 查找的时候，条件只能是那些有值的属性
      */
     public <T> boolean select(T instanse) throws SQLException, IllegalAccessException, NoSuchFieldException {
-        keepConnection();
         boolean retu = false;
 
         sql = new StringBuilder("SELECT * FROM ");                                //组织sql
@@ -279,7 +281,6 @@ public class Access {
      * table是表的bean对象，condition是查询的条件
      */
     public <M> List<M> selectAll(M table, String condition) throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException, NoSuchFieldException {
-        keepConnection();
         _class = table.getClass();
         sql = new StringBuilder("SELECT * FROM " + _class.getSimpleName().toLowerCase() + " WHERE " + condition + ";");//组织sql语句
 
@@ -314,7 +315,6 @@ public class Access {
      * example: updateAll(user,"statu=false","1=1");
      */
     public <M> boolean updateAll(M table, String content, String condition) throws SQLException {
-        keepConnection();
         // UPDATE table SET a=1,b=2,c=3 WHERE mark=0001;
         sql = new StringBuilder("UPDATE " + table.getClass().getSimpleName().toLowerCase() + " SET " + content + " WHERE " + condition + ";");//组织sql语句
         logger.info("updateALL:"+sql.toString());
@@ -332,6 +332,5 @@ public class Access {
             return false;
         }
     }
-
 
 }

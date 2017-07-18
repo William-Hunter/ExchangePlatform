@@ -12,17 +12,25 @@
         <welcome-file>default.htm</welcome-file>
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
+
+
+    <filter-mapping>
+        <filter-name>DBContectCheck</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>
             org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
         </filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>struts2</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+
     <listener>
         <listener-class>listener.AppListener</listener-class>
     </listener>

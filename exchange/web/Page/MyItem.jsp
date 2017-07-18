@@ -2,11 +2,13 @@
 	pageEncoding="UTF-8" import="java.util.*,bean.Item"%>
 <%@ page import="bean.User" %>
 <%@ page import="listener.AppListener" %>
+<%@ page import="dao.DBAccess" %>
 <%@taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	User user     = (User) session.getAttribute("user");
-	List<Item> itemlist = AppListener.access.selectAll(new Item(), "owner=" + user.getIds());
+	DBAccess access     = (DBAccess) session.getAttribute("user");
+	List<Item> itemlist = access.selectAll(new Item(), "owner=" + user.getIds());
 	request.setAttribute("itemlist",itemlist);
 %>
 <html>

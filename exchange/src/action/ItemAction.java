@@ -6,6 +6,7 @@ import bean.Item;
 import bean.User;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import dao.DBAccess;
 import listener.AppListener;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -26,12 +27,13 @@ import java.util.Properties;
  */
 public class ItemAction extends ActionSupport {
     static Logger logger = LoggerFactory.getLogger(ItemAction.class);
-    private Item   item;
-    private File   pictureUpload;
-    private String pictureUploadContentType;
-    private String pictureUploadFileName;
-    private String newOwner;
-    private String key;
+    private Item     item;
+    private File     pictureUpload;
+    private String   pictureUploadContentType;
+    private String   pictureUploadFileName;
+    private String   newOwner;
+    private String   key;
+    private DBAccess access;
 
     public String getKey() {
         return key;
@@ -86,13 +88,14 @@ public class ItemAction extends ActionSupport {
 
     public String deal() throws SQLException, IllegalAccessException, NoSuchFieldException {
         Map session = ActionContext.getContext().getSession();
-        AppListener.access.select(item);
+        access= (DBAccess) session.get("DBConnect");
+        access.select(item);
 
         String oldOwner = item.getOwner();
         String rootPath = ServletActionContext.getServletContext().getRealPath("/Picture/Item/");
 
         item.setOwner(newOwner);
-        if (AppListener.access.update(item)) {
+        if (access.update(item)) {
             logger.debug("DEAL---old Owner:" + oldOwner + "\tTO\t" + "new Owner:" + newOwner);
             if (moveFile(rootPath + oldOwner + "/" + item.getPictureLink(), rootPath + newOwner + "/",
                     item.getPictureLink())
@@ -104,7 +107,7 @@ public class ItemAction extends ActionSupport {
             } else {
                 logger.debug("移动文件出错");
                 item.setOwner(oldOwner);
-                AppListener.access.update(item);
+                access.update(item);
                 session.put("item", item);
                 ActionContext.getContext().setSession(session);
             }
@@ -141,7 +144,8 @@ public class ItemAction extends ActionSupport {
         record.setReceiver(oldOwner);
         record.setItemId(itemId);
         record.setItemName(itemName);
-        if (AppListener.access.insert(record)) {
+        access= (DBAccess) ActionContext.getContext().getSession().get("DBConnect");
+        if (access.insert(record)) {
             logger.debug("add record success");
             return true;
         } else {
@@ -152,10 +156,11 @@ public class ItemAction extends ActionSupport {
 
     public String editInit() throws SQLException, IllegalAccessException, NoSuchFieldException {
         HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+        access= (DBAccess) ActionContext.getContext().getSession().get("DBConnect");
         if (null == item) {
             return SUCCESS;
         } else {
-            if (AppListener.access.select(item)) {
+            if (access.select(item)) {
                 request.setAttribute("item", item);
                 return SUCCESS;
             } else {
@@ -165,7 +170,9 @@ public class ItemAction extends ActionSupport {
     }
 
     public String edit() throws IllegalAccessException, SQLException, NoSuchFieldException {
-        User user = (User) ActionContext.getContext().getSession().get("user");
+        Map session=ActionContext.getContext().getSession();
+        User user = (User) session.get("user");
+        access=(DBAccess) session.get("DBConnect");
         item.setOwner(String.valueOf(user.getIds()));                           // 设置物品所有者
         if(null!=pictureUpload){
             String[] names   = pictureUploadFileName.split("\\.");
@@ -178,7 +185,7 @@ public class ItemAction extends ActionSupport {
             }
         }
         if(item.getIds()!=null){
-            if (AppListener.access.update(item)) {                      // 添加物品
+            if (access.update(item)) {                      // 添加物品
                 logger.debug("update item success");
                 return SUCCESS;
             } else {
@@ -186,7 +193,7 @@ public class ItemAction extends ActionSupport {
                 return INPUT;
             }
         }else{
-            if (AppListener.access.insert(item)) {                      // 添加物品
+            if (access.insert(item)) {                      // 添加物品
                 logger.debug("add item success");
                 return SUCCESS;
             } else {
@@ -198,13 +205,15 @@ public class ItemAction extends ActionSupport {
 
     public String detail() throws SQLException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
-        if (AppListener.access.select(item)) {
+        Map session=ActionContext.getContext().getSession();
+        access=(DBAccess) session.get("DBConnect");
+        if (access.select(item)) {
             request.setAttribute("item", item);
-            List<Comment> commentlist = AppListener.access.selectAll(new Comment(), "aim=" + item.getIds());
+            List<Comment> commentlist = access.selectAll(new Comment(), "aim=" + item.getIds());
             if (commentlist != null) {
                 request.setAttribute("commentlist", commentlist);
             }
-            List<User> owners = AppListener.access.selectAll(new User(), "ids=" + item.getOwner());
+            List<User> owners = access.selectAll(new User(), "ids=" + item.getOwner());
             if (owners.size()==1){
                 request.setAttribute("owner", owners.get(0));
             }
@@ -229,9 +238,11 @@ public class ItemAction extends ActionSupport {
 //    }
 
     public String deleteItem() throws NoSuchFieldException, IllegalAccessException, SQLException {
+        Map session=ActionContext.getContext().getSession();
+        access=(DBAccess) session.get("DBConnect");
         String rootPath  = ServletActionContext.getServletContext().getRealPath("/Picture/Item/");
         File   deleteImg = new File(rootPath + item.getOwner() + "/" + item.getPictureLink());
-        if (AppListener.access.delete(item)) {
+        if (access.delete(item)) {
             if (deleteImg.delete()) {
                 logger.debug("remove item success");
                 return SUCCESS;
@@ -242,11 +253,12 @@ public class ItemAction extends ActionSupport {
     }
 
     public String searchItem() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        List<Item> resultList = AppListener.access.selectAll(item, "itemName='" + key + "'");
+        Map session=ActionContext.getContext().getSession();
+        access=(DBAccess) session.get("DBConnect");
+        List<Item> resultList = access.selectAll(item, "itemName='" + key + "'");
         if (resultList != null) {
-            Map session = ActionContext.getContext().getSession();
-            session.put("resultlist", resultList);
-            ActionContext.getContext().setSession(session);
+            HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+            request.setAttribute("resultlist", resultList);
             return SUCCESS;
         } else {
             return INPUT;

@@ -12,7 +12,7 @@ import dao.*;
 
 public class AppListener implements ServletContextListener {
 	static Logger logger = LoggerFactory.getLogger(AppListener.class);
-	public static Access access;
+//	public static DBAccess access;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
@@ -20,24 +20,16 @@ public class AppListener implements ServletContextListener {
 //		Map session = ActionContext.getContext().getSession();
 
 
-		try {
-			access=new Access();
-			
-			if (access.isConntect()) {
-				logger.debug("the database contection is able.");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		if(access.close()){
-			logger.debug("DB Access close finish");
-		}else{
-			logger.debug("DB Access close fail");
-		}
+//		if(access.close()){
+//			logger.debug("DB Access close finish");
+//		}else{
+//			logger.debug("DB Access close fail");
+//		}
 	}
 
 }
