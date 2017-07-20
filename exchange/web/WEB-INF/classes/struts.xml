@@ -75,21 +75,16 @@
         </action>
     </package>
 
-    <package name="comment" namespace="/Comment" extends="struts-default">
-        <action name="Add" method="addComment" class="action.CommentAction">
-            <result name="success" type="redirect">
-                ItemInfo?item.itemId=${#session.item.itemId}
-            </result>
-            <result name="input"></result>
-        </action>
-        <action name="Delete" method="deleteComment" class="action.CommentAction">
-            <result name="success" type="redirect">
-                ItemInfo?item.itemId=${#session.item.itemId}
-            </result>
-            <result name="input"></result>
-        </action>
-    </package>
 
+    <package name="comment" namespace="/Comment" extends="json-default">
+        <action name="Add" class="action.CommentAction" method="addComment">
+            <result type="json">
+                <param name="root">resultJson</param>
+            </result>
+        </action>
+
+        <!--<action name="Delete" method="deleteComment" class="action.CommentAction"/>-->
+    </package>
 
     <include file="struts-default.xml"/>
 </struts>

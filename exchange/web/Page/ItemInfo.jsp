@@ -58,27 +58,20 @@
         <br>
         <div class="row">
 
-            <form action="${pageContext.request.contextPath}/Comment/Add?comment.sender=<s:property value="#session.user.email"/>
-				&comment.receiver=<s:property value="#request.item.owner"/>
-				&comment.aim=<s:property value="#request.item.ids"/>" method="post">
-					<textarea name="comment.context" class="form-control" rows="3"
-                              placeholder="在此处输入您的评论"></textarea>
+            <form action="${pageContext.request.contextPath}/Comment/Add?" method="post">
+                <input type="text" value="<s:property value="#session.user.ids"/>" id="sender" style="display: none">
+                <input type="text" value="<s:property value="#request.item.owner"/>" id="receiver" style="display: none">
+                <input type="text" value="<s:property value="#request.item.ids"/>" id="aim" style="display: none">
+                <textarea id="context" class="form-control" rows="3" placeholder="在此处输入您的评论"></textarea>
                 <br>
                 <br>
-
                 <div class="col-center-block col-md-8 ">
-                    <button type="submit"
-                            class="btn btn-default col-md-3 col-md-offset-1">评论
+                    <button id="commentBTN" type="button" class="btn btn-default col-md-3 col-md-offset-1">评论
                     </button>
                 </div>
             </form>
             <div class="col-md-3"></div>
-            <form
-                    action="Deal?item.ids=<s:property value="#request.item.ids"/>
-				&newOwner=
-				<s:property value="#session.user.email"/>
-				"
-                    method="post">
+            <form action="Deal?item.ids=<s:property value="#request.item.ids"/>&newOwner=<s:property value="#session.user.email"/>" method="post">
                 <button type="submit" class="btn btn-default col-md-3 btn-success">购买</button>
             </form>
 
@@ -94,16 +87,13 @@
                 <div class="col-md-11 col-sm-11 col-center-block">
                     <div class="row btn-default">
                         <p>
-                            <a
-                                    href="/CheckUser?checkUser.email=<s:property value="#comment.sender"/>
-							">
+                            <a href="/CheckUser?checkUser.email=<s:property value="#comment.sender"/>">
                                 <s:property value="#comment.sender"/>
                             </a> 评论：
                             <s:property value="#comment.context"/>
                         </p>
                         <p>
-                            <a
-                                    href="${pageContext.request.contextPath}
+                            <a href="${pageContext.request.contextPath}
 							/DeleteComment?comment.commentId=
 							<s:property value="#comment.commentId"/>
 							">删除
@@ -117,5 +107,34 @@
 
     </div>
     </div>
+
+<script type="text/javascript">
+
+$('#commentBTN').click(function () {
+    var sender=$('#sender').val();
+    var receiver=$('#receiver').val();
+    var aim=$('#aim').val();
+    var context=$('#context').val();
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: '${pageContext.request.contextPath}/Comment/Add',
+        data: {
+            sender : sender,
+            receiver:receiver,
+            aim:aim,
+            context:context
+        },
+        success: function(result) {
+            if(result.code==200){
+                alert("评论成功");
+            }else{
+                alert("评论失败，系统错误");
+            }
+        }
+    });
+});
+
+</script>
 </body>
 </html>

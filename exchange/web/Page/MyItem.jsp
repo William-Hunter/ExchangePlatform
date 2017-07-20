@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	User user     = (User) session.getAttribute("user");
-	DBAccess access     = (DBAccess) session.getAttribute("user");
+	DBAccess access     = (DBAccess) session.getAttribute("DBConnect");
 	List<Item> itemlist = access.selectAll(new Item(), "owner=" + user.getIds());
 	request.setAttribute("itemlist",itemlist);
 %>

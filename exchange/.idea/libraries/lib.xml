@@ -22,6 +22,7 @@
       <root url="jar://$PROJECT_DIR$/src/lib/asm-3.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/src/lib/asm-commons-3.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/src/lib/asm-tree-3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/lib/struts2-json-plugin-2.3.24.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
